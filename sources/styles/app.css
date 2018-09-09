@@ -103,3 +103,7 @@
 .status_good{
 	color:#ddd;
 }
+
+.top_toolbar {
+    background-color: #34495e !important;  
+}
