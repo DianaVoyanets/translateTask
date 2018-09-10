@@ -11,11 +11,9 @@ export default class LoginView extends JetView{
 						view: "form",
 						localId: "login:form",
 						elements:[
-							{ view: "spacer"},
 							{ view:"text", name:"login", label:"User Name:",labelWidth:110,width: 350},
 							{ view:"text",name:"pass", label:"Password:",type:"password",labelWidth:110,width: 350},
 							{rows:[
-								{view:"spacer"},
 								{view:"button", value:"Login", click:() => this.doLogin(), hotkey:"enter",width:100,align:"right"},
 							]}
 						],
@@ -34,7 +32,6 @@ export default class LoginView extends JetView{
 							{ view:"text", name:"login", label:"User Name:",labelWidth:100,width: 350},
 							{ view:"text",name:"pass", label:"Password:", type:"password",labelWidth:100,width: 350},
 							{rows:[
-								{view:"spacer"},
 								{ view:"button", value:"Register", click:() => this.doRegister(), hotkey:"enter",width:100,align:"right"}
 							]},
 						]
@@ -71,10 +68,9 @@ export default class LoginView extends JetView{
             
 			user.login(data.login, data.pass)
 				.catch(function() {
-					webix.html.removeCss(form.$view, "invalid_login");
 					form.elements.pass.focus();
 					webix.delay(function() {
-						webix.html.addCss(form.$view, "invalid_login");
+						webix.message("Incorrect login or password");
 					});
 				});
 		}
@@ -92,7 +88,7 @@ export default class LoginView extends JetView{
 					user: data.login, 
 					pass: data.pass 
 				})
-				.then(response => response.json());
+				.then(response => response.json(),webix.message("You're successs register!"));
 		}
 	}
 }

@@ -13,6 +13,7 @@ export default class TopView extends JetView{
 			width:180, layout:"y", select:true,
 			template:"<span class='webix_icon fa-#icon#'></span> #value# ",
 			data:[
+				{value:"Base of words", id:"baseOfWords", icon:"envelope-o" },
 				{value:"Group of world", id:"wordsGroupList", icon:"envelope-o" },
 				{value:"Test",id:"test",  icon:"briefcase" },
 				{value:"Tests result",id:"testResult",  icon:"briefcase" },

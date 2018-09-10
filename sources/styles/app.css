@@ -107,3 +107,18 @@
 .top_toolbar {
     background-color: #34495e !important;  
 }
+
+.webix_view.invalide_template {
+	border: 1px solid rgb(243, 161, 161) !important;
+	text-align: center;
+	color: rgb(243, 161, 161);
+}
+
+.list_height .webix_list_item {
+	height: 80px !important;
+} 
+
+.delete_button {
+    float: right;
+    font-size: 25px;
+}

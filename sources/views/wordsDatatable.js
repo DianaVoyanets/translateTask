@@ -9,15 +9,17 @@ export default class wordsDatatable extends JetView {
 					localId:"myToolbar",
 					cols:[
 						{view: "spacer"},
-						{ view:"button",localId:"export_to_excel",label:"Export to XLSX"}
+						{view: "spacer"},
+						{view:"button",localId:"export_to_excel",label:"Export to Excel",width: 120}
 					]
 				},
 				{
 					view: "datatable",
+					localId: "datatable",
 					columns: [
-						{id: "origin",header: "Origin word"},
+						{id: "originWords",header: "Origin word"},
 						{id: "translation",header: "Translation"},
-						{id: "partOfSpeech",header: "Part of speech"},
+						{id: "partOfSpeach",header: "Part of speech"},
 						{id: "pencil-icon", header:"",template: "{common.editIcon()}",width:50},
 				        {id: "trash-icon", header: "",template: "{common.trashIcon()}",width:50},
 					]
@@ -27,6 +29,13 @@ export default class wordsDatatable extends JetView {
 		return {
 			rows: [wordsDatatable]
 		};
+	}
+	init() {
+		this.on(this.app,"listSelected",(data) => {
+			if(data) {
+				this.$$("datatable").parse(data);
+			}
+		})
 	}
 }
         
