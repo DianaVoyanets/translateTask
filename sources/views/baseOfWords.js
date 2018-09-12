@@ -24,9 +24,6 @@ export default class BaseOfWords extends JetView {
 						}
 					});
 				},
-				// "fa-pencil": (e,id) => {
-				// 	this._jetPopup.showWindow(id);
-				// }
 			},
         }
 
@@ -56,7 +53,7 @@ export default class BaseOfWords extends JetView {
         cols: [baseOfWords,form]
     };
 }
+
 init() {
     this.$$("mydatatable").sync(baseOfWordsCollection);
-}
-}
+}}

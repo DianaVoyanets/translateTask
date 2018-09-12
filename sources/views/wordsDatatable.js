@@ -10,7 +10,11 @@ export default class wordsDatatable extends JetView {
 					cols:[
 						{view: "spacer"},
 						{view: "spacer"},
-						{view:"button",localId:"export_to_excel",label:"Export to Excel",width: 120}
+						{ view:"button",
+						  localId:"export_to_excel",
+						  label:"Export to Excel",
+						  width: 120
+						}
 					]
 				},
 				{
@@ -30,12 +34,19 @@ export default class wordsDatatable extends JetView {
 			rows: [wordsDatatable]
 		};
 	}
-	init() {
+
+	urlChange() {
+		console.log(this.getParam("id",true));
+	}
+
+	init(view,url) {
 		this.on(this.app,"listSelected",(data) => {
+			this.$$("datatable").clearAll();
 			if(data) {
 				this.$$("datatable").parse(data);
 			}
 		})
+		//this.$$("add_words").attachEvent("onItemClick",() => console.log(url))
 	}
 }
         

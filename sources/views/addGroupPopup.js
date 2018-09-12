@@ -18,32 +18,14 @@ export default class addGroupPopupView extends JetView{
 		var datatable = {
 			view: "datatable",
 			localId: "mydatatable",
-			select:"row",
+			select:true,
 			multiselect:true,
 			width: 600,
 			columns: [
 				{id: "originWords",header: "Origin word"},
 				{id: "translation",header: "Translation"},
-				{id: "partOfSpeach",header: "Part of speach"},
-				{id: "trash-icon", header: "",template: "{common.trashIcon()}",width:50},          
+				{id: "partOfSpeach",header: "Part of speach"},      
 			],
-
-				onClick: {
-					"fa-trash": function(e, id) {
-						webix.confirm({
-							text:"Do you still want to remove field?",
-							callback: (result) => {
-								if(result) {
-									baseOfWordsCollection.remove(id);
-									return false;
-								}
-							}
-						});
-					},
-					// "fa-pencil": (e,id) => {
-					// 	this._jetPopup.showWindow(id);
-					// }
-				},
 		}
 		
 		return {
@@ -60,24 +42,16 @@ export default class addGroupPopupView extends JetView{
 					{cols:[
 						{view: "spacer"},
 						{view: "button",value: "Add",width: 120,click: () => {
-							// var data = this.$$("form").getValues();
-							// wordsGroup.add(data);
-							// data.wordsIds = [];
-							// for(var i = 0;i < this.$$("mydatatable").getSelectedItem().length;i++) {
-							// 	data.wordsIds.push(this.$$("mydatatable").getSelectedItem()[i].id);
-							// }
-							// console.log(data);
 							let group = this.$$("form").getValues();
 							group.wordsIds = this.$$("mydatatable").getSelectedItem();
-							if(group.hasOwnProperty("id")){
+							if (group.hasOwnProperty("id")) {
 								wordsGroup.updateItem(group.id, group);
 							}
 							else{
 								wordsGroup.add(group);
 							}
-
-							this.$$("form").clear();
 							this.$$("formPopup").hide();
+							this.$$("form").clear();
 							
 						}},
 						{view: "button",value: "Cancel",width: 120,click: () => this.$$("formPopup").hide()},
@@ -96,11 +70,4 @@ export default class addGroupPopupView extends JetView{
 	init() {
 		this.$$("mydatatable").sync(baseOfWordsCollection);
 	}
-	// saveData() {
-		
-	// }
-
-	// hide() {
-	// 	return this.$$("formPopup").hide();
-	// }
 }
