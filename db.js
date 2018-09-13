@@ -12,7 +12,7 @@ var Users = sequelize.define("users",{
 });
 
 
-var Words = sequelize.define("words",{
+var Words = sequelize.define("words", {
 	originWords: Sequelize.STRING,
 	translation: Sequelize.STRING, 
 	partOfSpeach: Sequelize.STRING,
