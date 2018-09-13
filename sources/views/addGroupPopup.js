@@ -5,28 +5,29 @@ import {wordsGroup} from "models/wordsGroup";
 export default class addGroupPopupView extends JetView{
 	config() {
 		var form = {
-				view:"form",
-				localId: "form",
-				width: 600,
-				gravity: 0.2,
-				elements: [
-					{view: "text",labelWidth: 120,label: "Name of group:",name: "name"},
-					{view:"datepicker",labelWidth: 120,label: "Date of creation:",value: new Date(),name: "dateOfCreation"},
-				],
-			}
+			view:"form",
+			localId: "form",
+			width: 600,
+			gravity: 0.2,
+			elements: [
+				{view: "text",labelWidth: 120,label: "Name of group:",name: "name"},
+				{view:"datepicker",labelWidth: 120,label: "Date of creation:",value: new Date(),name: "dateOfCreation"},
+			],
+		};
 
 		var datatable = {
 			view: "datatable",
 			localId: "mydatatable",
+			scroll: false,
 			select:true,
 			multiselect:true,
 			width: 600,
 			columns: [
 				{id: "originWords",header: "Origin word"},
 				{id: "translation",header: "Translation"},
-				{id: "partOfSpeach",header: "Part of speach"},      
+				{id: "partOfSpeach",header: "Part of speach",width: 150},      
 			],
-		}
+		};
 		
 		return {
 			view:"window", 
@@ -59,7 +60,7 @@ export default class addGroupPopupView extends JetView{
 				]
 				
 			}
-		}
+		};
 
 	}
 	
