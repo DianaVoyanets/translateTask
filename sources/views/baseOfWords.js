@@ -1,16 +1,18 @@
 import {JetView} from "webix-jet";
 import {baseOfWordsCollection} from "models/baseOfWordsCollection";
+import {partOfSpech} from "models/partOfSpeachCollection";
+import {wordsGroup} from "models/wordsGroup";
+
 export default class BaseOfWords extends JetView {
 	config() {
 		var baseOfWords = {
 			view: "datatable",
 			localId: "mydatatable",
+			select: true,
 			columns: [
 				{id: "originWords",header: "Origin word"},
 				{id: "translation",header: "Translation"},
-				{id: "partOfSpeach",header: "Part of speach",width:150},
-				{id: "pencil-icon", header:"",template: "{common.editIcon()}",width:50},
-				{id: "trash-icon", header: "",template: "{common.trashIcon()}",width:50},            
+				{id: "partOfSpeach",header: "Part of speach",width:150},         
 			],
 			onClick: {
 				"fa-trash": function(e, id) {
@@ -25,6 +27,15 @@ export default class BaseOfWords extends JetView {
 					});
 				},
 			},
+			on: {
+				onAfterSelect: (id)=>{
+					let values = this.$$("mydatatable").getItem(id);
+					this.$$("myform").setValues(values);
+					this.$$("add_button").hide();
+					this.$$("save_button").show();
+				}
+			}
+
 		};
 
 		var form  = {
@@ -35,15 +46,17 @@ export default class BaseOfWords extends JetView {
 			elements:[
 				{view:"text", name: "originWords",labelWidth: 110,label:"Oringin word:" },
 				{view:"text",name:  "translation", labelWidth: 110,label:"Translation:" },
-				{view: "combo",name: "partOfSpeach",labelWidth: 110,label: "Part of speech:"},
+				{view: "combo",name: "partOfSpeach",labelWidth: 110,options: {data:partOfSpech},label: "Part of speech:"},
                 
 				{cols:[
-					{ view:"button", value:"Add new word",
+					{ view:"button", localId:"add_button",value:"Add",
 						click:  (id) => {
-							var data = this.$$("myform").getValues();
-							baseOfWordsCollection.add(data);
-							this.$$("myform").clear();
-						}},
+							this.addData();
+					}},
+					{ view:"button", hidden: true,localId:"save_button",value:"Save",
+						click:  (id) => {
+							this.saveData();
+					}},
 				]},
 				{view: "spacer"}
 			]
@@ -54,6 +67,21 @@ export default class BaseOfWords extends JetView {
 		};
 	}
 
+	addData() {
+		var data = this.$$("myform").getValues();
+		baseOfWordsCollection.add(data);
+		this.$$("myform").clear();
+	}
+
+	saveData() {
+		let value = this.$$("myform").getValues();
+		baseOfWordsCollection.updateItem(value.id,value);
+		this.$$("myform").clear();
+		this.$$("save_button").hide();
+		this.$$("add_button").show();
+	}
+
 	init() {
 		this.$$("mydatatable").sync(baseOfWordsCollection);
+		this.$$("add_button").show();
 	}}

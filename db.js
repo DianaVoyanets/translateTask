@@ -33,9 +33,6 @@ var wordsGroup = sequelize.define("wordsGroup",{
 	] 
 });
 
-sequelize.sync({ force: true }).then(() => {
-	Words.create({originWords:"Привет",translation: "Hello",partOfSpeach:"существительное"});
-});
 
 
 module.exports = {

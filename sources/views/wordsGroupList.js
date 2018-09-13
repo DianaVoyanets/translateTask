@@ -24,15 +24,21 @@ export default class wordsGroupList extends JetView {
 								let words = this.$$("mylist").getSelectedItem().wordsIds;
 								if (!words) {
 									this._jetPopupWord.showWindow(null,selectedItem);
-								} else {
-									words = JSON.parse(words);
-									this._jetPopupWord.showWindow(words,selectedItem);
+								} 
+								else {
+										this._jetPopupWord.showWindow(words,selectedItem);
+									}
+									
 								}
-							}},
+							},
 						{ view:"button",
 							localId:"export_to_excel",
 							label:"Export to Excel",
-							width: 120
+							width: 120,
+							click: () => {
+								//let word = this.$$("mylist").getSelectedItem().wordsIds;
+								webix.toExcel(this.$$("datatable"));
+							}
 						},
 					]
 				},

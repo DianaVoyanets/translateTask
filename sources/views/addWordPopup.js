@@ -55,7 +55,13 @@ export default class addWordsPopupView extends JetView{
 		}
         
 		this.$$("myform").setValues(item);
-		this.$$("mydatatable").filter((item) => words.find(i => i.id === item.id) == undefined);
+		if(Array.isArray(words)) {
+			for(var i = 0; i < words.length;i++) {
+				this.$$("mydatatable").select(words[i].id,true);
+			}
+		} else {
+			this.$$("mydatatable").select(words.id);
+		}
 		this.getRoot().show();
 	}	
 	
