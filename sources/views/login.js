@@ -88,11 +88,15 @@ export default class LoginView extends JetView{
             
 			webix
 				.ajax()
-				.post("http://localhost:3000/server/register", { 
+				.post("/server/user/register", { 
 					user: data.login, 
 					pass: data.pass 
 				})
-				.then(response => response.json(),webix.message("You're successs register!"));
+				.then( response => {
+					debugger
+					response.json(),webix.message(response.json().message)
+				})
+			
 		}
 	}
 }

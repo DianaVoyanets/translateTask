@@ -1,11 +1,16 @@
 import {JetView} from "webix-jet";
 import {wordsGroup} from "models/wordsGroup";
 import {baseOfWordsCollection} from "models/baseOfWordsCollection";
+import {testResultsCollection} from "models/testResult";
 
 export default class doTest extends JetView {
 	config() {
-		this.groupName = "";
-
+        this.groupName = "";
+        this.buttonClick = null;
+        this.randomButton;
+        this.testNumber = 0;
+        this.result = 0;
+    
 		return {
 			rows: [
 				{
@@ -20,12 +25,19 @@ export default class doTest extends JetView {
 						width: 200,
 						on: {
 							"onChange": () => {
-								this.groupName = this.$$("myrichselect").getText();
-								this.getRandomWordLabel();
+                                this.groupName = this.$$("myrichselect").getText();
+                                this.allButtonShow();
+								this.generateTest();
 							}
 						}
 					},
-					{view: "spacer"},
+                    {view: "button",value: "Start again",width: 200,click: () =>{
+                        this.testNumber = 0;
+                        this.generateTest();
+                        if(this.testNumber === 0) return;
+                        this.allButtonShow();
+                    }},
+                    {view: "spacer"}
 				]
 				},
 				{
@@ -37,8 +49,14 @@ export default class doTest extends JetView {
 				{
 					margin:30,cols: [
 						{ view:"spacer"},
-						{ view: "button",localId:"1",value: "",width: 200},
-						{ view: "button",localId:"2",value: "",width: 200},
+						{ view: "button",localId:"1",hidden: true,value: "",width: 200,click:() => {
+                            this.checkRightAnswer(this.randomButton,"1");
+                            this.generateTest();
+                        }},
+						{ view: "button",localId:"2",hidden: true,value: "",width: 200,click: () => {
+                            this.checkRightAnswer(this.randomButton,"2");
+                            this.generateTest();
+                        }},
 						{ view: "spacer"}
 					]
 				},
@@ -46,8 +64,14 @@ export default class doTest extends JetView {
 				{
 					margin: 30,cols: [
 						{ view:"spacer"},
-						{ view: "button",localId:"3",value: "",width: 200},
-						{ view: "button",localId:"4",value: "",width: 200},
+						{ view: "button",localId:"3",hidden: true,value: "",width: 200,click:()=> {
+                            this.checkRightAnswer(this.randomButton,"3");
+                            this.generateTest();
+                        }},
+						{ view: "button",localId:"4",hidden: true,value: "",width: 200,click:()=> {
+                            this.checkRightAnswer(this.randomButton,"4");
+                            this.generateTest();
+                        }},
 						{ view: "spacer"}
 					]
 				},
@@ -59,56 +83,72 @@ export default class doTest extends JetView {
         
 	}
 
+	generateTest() {
 
-	getRandomWordLabel() {
-    
-		this.allButtonValueClear();
+        if(!this.groupName)  {
+            webix.message({type:"error", text:"Please,select the words group"});
+            return;
+        }
+
+        this.testNumber++;
+
+        //this.countNumberOfTest();
+        
+        if(this.testNumber > 4) {
+            this.allButtonHide();
+            this.$$("mylabel").setValue("Your result:" + this.result);
+            testResultsCollection.add({"result": this.result,"groupName": this.groupName});
+            return;
+        }
+        
+        this.allButtonValueClear();
 
 		let selectedGroup = wordsGroup.find(obj => obj.name === this.groupName, true);
         
 		let buttonIds = ["1", "2", "3", "4"];
 		let randomButtonId = this.getRandomRange(0, buttonIds.length - 1);
-		let randomButton = buttonIds[randomButtonId];
+        this.randomButton = buttonIds[randomButtonId];
         
 		let randomWordId;
 		let partOfSpeachWords;
-		let randomWordGroup;
+		this.randomWordGroup;
 
 		if (Array.isArray(selectedGroup.wordsIds)) {
 			randomWordId = this.getRandomRange(0, selectedGroup.wordsIds.length);
-			randomWordGroup = selectedGroup.wordsIds[randomWordId];
+            this.randomWordGroup = selectedGroup.wordsIds[randomWordId];
+            
+            let randomWordfromSelectedGroup = this.randomWordGroup.originWords;
+			this.$$("mylabel").setValue(randomWordfromSelectedGroup);
 
 			partOfSpeachWords = baseOfWordsCollection.find(obj => {
-				return obj.partOfSpeach === randomWordGroup.partOfSpeach 
-                    && obj.translation !== randomWordGroup.translation 
-                    && obj.originWords !== randomWordGroup.originWords;
+				return obj.partOfSpeach === this.randomWordGroup.partOfSpeach 
+                    && obj.translation !== 	this.randomWordGroup.translation 
+                    && obj.originWords !== 	this.randomWordGroup.originWords;
 			});
             
 			if (partOfSpeachWords.length === 0) {
-				partOfSpeachWords.push(randomWordGroup);
+				partOfSpeachWords.push(this.randomWordGroup);
 			}
 
-			let randomRightTranslateWord = randomWordGroup.translation;
-			this.$$(randomButton).setValue(randomRightTranslateWord);
-            
-			let randomWordfromSelectedGroup = randomWordGroup.originWords;
-			this.$$("mylabel").setValue(randomWordfromSelectedGroup);
+			let randomRightTranslateWord = this.randomWordGroup.translation;
+			this.$$(this.randomButton).setValue(randomRightTranslateWord);
 
 		} else {
-			let singleWordGroup = selectedGroup.wordsIds;
+			this.singleWordGroup = selectedGroup.wordsIds;
 
-			this.$$("mylabel").setValue(singleWordGroup.originWords);
-			this.$$(randomButton).setValue(singleWordGroup.translation);
- 
-			partOfSpeachWords = baseOfWordsCollection.find(obj => {
-				return obj.partOfSpeach === singleWordGroup.partOfSpeach 
-                    && obj.translation !== singleWordGroup.translation 
-                    && obj.originWords !== singleWordGroup.originWords;
+			this.$$("mylabel").setValue(this.singleWordGroup.originWords);
+            this.$$(this.randomButton).setValue(this.singleWordGroup.translation);
+
+            partOfSpeachWords = baseOfWordsCollection.find(obj => {
+				return obj.partOfSpeach === this.singleWordGroup.partOfSpeach 
+                    && obj.translation !== this.singleWordGroup.translation 
+                    && obj.originWords !== this.singleWordGroup.originWords;
 			});
             
 			if (partOfSpeachWords.length === 0) {
 				partOfSpeachWords.push(singleWordGroup);
-			}
+            }
+
 		}
         
 		buttonIds.splice(randomButtonId, 1);
@@ -118,7 +158,38 @@ export default class doTest extends JetView {
 			let randomSpeachWord = partOfSpeachWords[randomSpeachWordId];
 			this.$$(buttonIds[i]).setValue(randomSpeachWord.translation);
 		}
-	}
+    }
+    
+    checkRightAnswer(clickButton,rightAnswerButton) {
+        if(clickButton === rightAnswerButton) {
+            let clickButtonValue = this.$$(clickButton).getValue();
+            if(!this.randomWordGroup) {
+                if(this.singleWordGroup.translation === clickButtonValue) {
+                    if(this.singleWordGroup.partOfSpeach === "Verb" || this.singleWordGroup.partOfSpeach ==="Noun"){
+                        this.result+=2;
+                    } else {
+                        this.result++;
+                    }
+                    webix.message("You're right");
+                    return;
+                } else {
+                    webix.message({type:"error", text:"False"});
+                    return;
+                }
+            }
+            if(this.randomWordGroup.translation === clickButtonValue) {
+                if(this.randomWordGroup.partOfSpeach === "Verb" || this.randomWordGroup.partOfSpeach==="Noun"){
+                    this.result+=2;
+                } else {
+                    this.result++;
+                }
+            }
+            webix.message("You're right");
+        } else {
+            webix.message({type:"error", text:"False"});
+        }
+    }
+
     
 	getRandom(max) {
 		return Math.floor(Math.random() * max);
@@ -133,7 +204,21 @@ export default class doTest extends JetView {
 		this.$$("2").setValue("");
 		this.$$("3").setValue("");
 		this.$$("4").setValue("");
-	}
+    }
+    
+    allButtonHide() {
+		this.$$("1").hide();
+		this.$$("2").hide();
+		this.$$("3").hide();
+		this.$$("4").hide();
+    }
+
+    allButtonShow() {
+        this.$$("1").show();
+		this.$$("2").show();
+		this.$$("3").show();
+		this.$$("4").show();
+    }
 
 	init() {
     

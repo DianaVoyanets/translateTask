@@ -1,7 +1,7 @@
 import {JetView} from "webix-jet";
 import {baseOfWordsCollection} from "models/baseOfWordsCollection";
 import {partOfSpech} from "models/partOfSpeachCollection";
-import {wordsGroup} from "models/wordsGroup";
+
 
 export default class BaseOfWords extends JetView {
 	config() {
@@ -43,6 +43,7 @@ export default class BaseOfWords extends JetView {
 			localId: "myform",
 			width: 400,
 			margin:20,
+			select: true,
 			elements:[
 				{view:"text", name: "originWords",labelWidth: 110,label:"Oringin word:" },
 				{view:"text",name:  "translation", labelWidth: 110,label:"Translation:" },

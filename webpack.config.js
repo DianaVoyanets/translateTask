@@ -62,7 +62,9 @@ module.exports = function(env) {
 			})
 		],
 		devServer:{
-			stats:"errors-only"
+			proxy:{
+				"/server":"http://localhost:3000"
+			}
 		}
 	};
 

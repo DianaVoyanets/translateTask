@@ -8,7 +8,7 @@ var sequelize = new Sequelize("sampledb","root","1",{
 
 var Users = sequelize.define("users",{
 	login: Sequelize.STRING,
-	password: Sequelize.STRING
+	password: Sequelize.STRING,
 });
 
 
@@ -18,9 +18,16 @@ var Words = sequelize.define("words", {
 	partOfSpeach: Sequelize.STRING,
 });
 
+var testResult = sequelize.define("testResult",{
+	result: Sequelize.INTEGER,
+	groupName: Sequelize.STRING
+});
+
+
 var wordsGroup = sequelize.define("wordsGroup",{
 	name: Sequelize.STRING,
 	dateOfCreation: Sequelize.DATE,
+	//user: Sequelize.STRING,
 	wordsIds: [
 		{
 			type: Sequelize.INTEGER,
@@ -34,7 +41,6 @@ var wordsGroup = sequelize.define("wordsGroup",{
 });
 
 
-
 module.exports = {
-	Users,Words,wordsGroup
+	Users,Words,wordsGroup,testResult
 };

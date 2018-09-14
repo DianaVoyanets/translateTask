@@ -1,6 +1,6 @@
-export var wordsGroup = new webix.DataCollection({
-	url: "http://localhost:3000/wordsGroup",
-	save: "rest->http://localhost:3000/wordsGroup/",
+export const wordsGroup = new webix.DataCollection({
+	url: "/server/wordsGroup",
+	save: "rest->/server/wordsGroup/",
 	scheme: {
 		$init(obj) {
 			if(typeof obj.wordsIds === "object") return;
