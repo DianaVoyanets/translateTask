@@ -5,6 +5,9 @@ import {wordsGroup} from "models/wordsGroup";
 
 export default class wordsGroupList extends JetView {
 	config() {
+		this.countWordsInGroup = 0;
+		const _ = this.app.getService("locale")._;
+
 		this.countOfWords = null;
 		var wordsDatatable = {
 			rows: [
@@ -14,11 +17,13 @@ export default class wordsGroupList extends JetView {
 					cols:[
 						{view: "spacer"},
 						{view: "spacer"},
-						{view: "button",
-							value: "Add new words",
+						{	view: "button",
+							type:"iconButton",
+							icon: "plus",
+							label: _("Add new words"),
 							localId:"add_word",
 							hidden: true,
-							width: 130,
+							width: 170,
 							click: () => {
 								let selectedItem = this.$$("mylist").getSelectedItem();
 								let words = this.$$("mylist").getSelectedItem().wordsIds;
@@ -31,12 +36,12 @@ export default class wordsGroupList extends JetView {
 									
 								}
 							},
-						{ view:"button",
+						{   view:"button",
+							type:"iconButton",
 							localId:"export_to_excel",
-							label:"Export to Excel",
-							width: 120,
+							label: '<span class="webix_icon fa fa-file-excel-o"></span><span class="text">Export to Excel</span>',
+							autowidth:true,
 							click: () => {
-								//let word = this.$$("mylist").getSelectedItem().wordsIds;
 								webix.toExcel(this.$$("datatable"));
 							}
 						},
@@ -46,10 +51,9 @@ export default class wordsGroupList extends JetView {
 					view: "datatable",
 					localId: "datatable",
 					columns: [
-						{id: "originWords",header: "Origin word"},
-						{id: "translation",header: "Translation"},
-						{id: "partOfSpeach",header: "Part of speech",width: 150},
-						{},
+						{id: "originWords",header: _("Origin word")},
+						{id: "translation",header: _("Translation")},
+						{id: "partOfSpeach",header: _("Part of speech"),width: 130},
 					]
 				}
 			]
@@ -61,9 +65,9 @@ export default class wordsGroupList extends JetView {
 				view:"toolbar",
 				localId:"myToolbar",
 				cols:[
-					{ view:"label", id:"toolbar_label", label:"Group of word"},
+					{ view:"label", id:"toolbar_label", label:_("Group of words")},
 				]},
-			{view: "search",placeholder: "search of group name"},
+			{view: "search",localId: "search_input",placeholder: _("search of group name")},
 			{
 				view: "list",
 				localId: "mylist",
@@ -73,14 +77,14 @@ export default class wordsGroupList extends JetView {
 				template: (obj) =>  {
 					return (
 						`<span class='delete_button'>×</span>
-						 <span>Group Name: ${obj.name}</span><br>
-				         <span>Count of words in a group:</span>`
+						 <span>${_("Group name:")} ${obj.name}</span><br>
+				         <span>${_("Count of words in a group:")} ${obj.wordsIds.length}</span>`
 					);
 				},	
 				onClick: {
 					"delete_button":(e,id) => {
 						webix.confirm({
-							text: "Do you still want to delete this company?",
+							text: "Do you still want to delete this group?",
 							callback: function(result) {
 								if(result) {
 									wordsGroup.remove(id); 
@@ -104,7 +108,7 @@ export default class wordsGroupList extends JetView {
 					}
 				}
 			},
-			{view: "button",value:"Add new group",localId: "add_group",click: ()=>this._jetPopup.showWindow()},
+			{view: "button",value:_("Add new group"),localId: "add_group",click: ()=>this._jetPopup.showWindow()},
 			]
 
 		};
@@ -122,7 +126,15 @@ export default class wordsGroupList extends JetView {
 		this._jetPopupWord = this.ui(addWordsPopupView);
 
 		wordsGroup.waitData.then(()=> {
-			this.$$("mylist").sync(wordsGroup);			
+			this.$$("mylist").sync(wordsGroup);	
+			this.$$("mylist").select(wordsGroup.getFirstId());	
+		});
+		this.$$("search_input").attachEvent("onTimedKeyPress",function(){
+			var value = this.getValue().toLowerCase();
+			this.$scope.$$("mylist").filter(function(obj){
+			  return obj.name.toLowerCase().indexOf(value) === 0;
+			})
 		});
 	}
+
 }

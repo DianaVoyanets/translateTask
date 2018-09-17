@@ -4,6 +4,7 @@ import {wordsGroup} from "models/wordsGroup";
 
 export default class addWordsPopupView extends JetView{
 	config() {	
+		const _ = this.app.getService("locale")._;
         
 		return  {
 			view:"window", 
@@ -13,31 +14,35 @@ export default class addWordsPopupView extends JetView{
 			modal: true,
 			move:true,
 			localId: "formPopup",
-			head:"Edit group of words",
+			head:_("Edit group of words"),
 			position:"center",
 			body:{
 				view: "form",
 				localId: "myform",
 				elements: [
-					{view: "text",labelWidth: 120,label: "Name of group:",name: "name"},
+					{view: "text",labelWidth: 120,label: _("Name of group:"),name: "name"},
 					{view: "datatable",id:"mydatatable",select:"row",multiselect: true,width:500,scrollY:false,
 						columns: [
-							{id: "originWords",header: "Origin word",width: 150},
-							{id: "translation",header: "Translation"},
-							{id: "partOfSpeach",header: "Part of speach",width: 150},    
+							{id: "originWords",header: _("Origin word"),width: 150},
+							{id: "translation",header: _("Translation")},
+							{id: "partOfSpeach",header: _("Part of speech"),width: 150},    
 						],
 					},
 					{cols:[
 						{view: "spacer"},
-						{view: "button",value: "Add",width: 120,click: () => {
+						{view: "button",value: _("Add"),width: 120,click: () => {
 							let group = this.$$("myform").getValues();
 							group.wordsIds = this.$$("mydatatable").getSelectedItem();
 							wordsGroup.updateItem(group.id,group);
 							this.$$("formPopup").hide();
+							this.$$("myform").clear();
+							this.$$("mydatatable").unselectAll();
 						}},
                         
-						{view: "button",value: "Cancel",width: 120,click: () => {
+						{view: "button",value: _("Cancel"),width: 120,click: () => {
 							this.$$("formPopup").hide();
+							this.$$("myform").clear();
+							this.$$("mydatatable").unselectAll();
 						}}
 					]}  
 				]

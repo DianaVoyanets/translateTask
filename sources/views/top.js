@@ -3,7 +3,9 @@ import {JetView, plugins} from "webix-jet";
 
 
 export default class TopView extends JetView{
-	config(){
+	config() {	
+		const _ = this.app.getService("locale")._;
+
 		var header = {
 			type:"header", template: "MyApp"
 		};
@@ -13,11 +15,10 @@ export default class TopView extends JetView{
 			width:180, layout:"y", select:true,
 			template:"<span class='webix_icon fa-#icon#'></span> #value# ",
 			data:[
-				{value:"Base of words", id:"baseOfWords", icon:"envelope-o" },
-				{value:"Group of world", id:"wordsGroupList", icon:"envelope-o" },
-				{value:"Test",id:"test",  icon:"briefcase" },
-				{value:"Tests result",id:"testResult",  icon:"briefcase" },
-				{value: "Settings",id: "settings",icon:"briefcase"}
+				{value:_("Base of words"), id:"baseOfWords", icon:"fas fa-book" },
+				{value:_("Group of words"), id:"wordsGroupList", icon:"fas fa-list-ul"},
+				{value:_("Test"),id:"test",  icon:"fas fa-question" },
+				{value:_("Tests result"),id:"testResult",  icon:"briefcase" },
 			]
 		};
 
@@ -25,9 +26,15 @@ export default class TopView extends JetView{
 			rows:[
 				{view:"toolbar",css: "top_toolbar",elements:[
 					{view:"spacer"},
-					{view:"spacer"},
-					{view: "button",value: "Log out",width:200,click: () => this.show("/logout")}
-				]},
+					{view: "spacer"},
+					{view: "spacer"},
+						{ name:"lang", optionWidth: 120, view:"segmented", label:_("Language"), options:[
+							{ id:"en", value:_("English") },
+							{ id:"ru", value:_("Russia") }
+						], click:() => this.toggleLanguage()},
+						{view: "button",value: _("Log out"),width:200,click: () => this.show("/logout")}
+					]
+				},
 				{
 					type:"line", cols:[
 						{ type:"clean", css:"app-left-panel",
@@ -45,7 +52,13 @@ export default class TopView extends JetView{
 
 		return ui;
 	}
+
 	init(){
 		this.use(plugins.Menu, "top:menu");
+	}
+	toggleLanguage() {
+		const langs = this.app.getService("locale");
+        const value = this.getRoot().queryView({ name:"lang" }).getValue();
+        langs.setLang(value);
 	}
 }

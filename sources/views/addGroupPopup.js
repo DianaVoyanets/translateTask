@@ -4,15 +4,20 @@ import {wordsGroup} from "models/wordsGroup";
 
 export default class addGroupPopupView extends JetView{
 	config() {
+		const _ = this.app.getService("locale")._;
+
 		var form = {
 			view:"form",
 			localId: "form",
 			width: 600,
 			gravity: 0.2,
 			elements: [
-				{view: "text",labelWidth: 120,label: "Name of group:",name: "name"},
-				{view:"datepicker",labelWidth: 120,label: "Date of creation:",value: new Date(),name: "dateOfCreation"},
+				{view: "text",labelWidth: 120,label: _("Name of group:"),name: "name",invalidMessage: "Name can not be empty"},
+				{view:"datepicker",labelWidth: 120,label: _("Date of creation:"),value: new Date(),name: "dateOfCreation"},
 			],
+			rules: {
+				"name": webix.rules.isNotEmpty
+			}
 		};
 
 		var datatable = {
@@ -23,9 +28,9 @@ export default class addGroupPopupView extends JetView{
 			multiselect:true,
 			width: 600,
 			columns: [
-				{id: "originWords",header: "Origin word"},
-				{id: "translation",header: "Translation"},
-				{id: "partOfSpeach",header: "Part of speach",width: 150},      
+				{id: "originWords",header: _("Origin word")},
+				{id: "translation",header: _("Translation")},
+				{id: "partOfSpeach",header: _("Part of speech"),width: 150},      
 			],
 		};
 		
@@ -34,7 +39,7 @@ export default class addGroupPopupView extends JetView{
 			height: 500,
 			move:true,
 			localId: "formPopup",
-			head:"Add group of words",
+			head:_("Add new group"),
 			position:"center",
 			body:{
 				rows: [
@@ -42,20 +47,22 @@ export default class addGroupPopupView extends JetView{
 					datatable,
 					{cols:[
 						{view: "spacer"},
-						{view: "button",value: "Add",width: 120,click: () => {
-							let group = this.$$("form").getValues();
-							group.wordsIds = this.$$("mydatatable").getSelectedItem();
-							if (group.hasOwnProperty("id")) {
-								wordsGroup.updateItem(group.id, group);
+						{view: "button",value:_("Add"),width: 120,click: () => {
+							let groupValues = this.$$("form").getValues();
+							groupValues.wordsIds = this.$$("mydatatable").getSelectedItem();
+							if(this.$$("form").validate()) {
+								if(!groupValues.wordsIds) {
+									webix.message({text:"Please select the words,which you want to add to the form",type: "error"});
+									return;
+								} else {
+									wordsGroup.add(groupValues);
+									this.$$("formPopup").hide();
+									this.$$("form").clear();
+									this.$$("mydatatable").unselectAll();
+								}
 							}
-							else{
-								wordsGroup.add(group);
-							}
-							this.$$("formPopup").hide();
-							this.$$("form").clear();
-							
 						}},
-						{view: "button",value: "Cancel",width: 120,click: () => this.$$("formPopup").hide()},
+						{view: "button",value: _("Cancel"),width: 120,click: () => this.$$("formPopup").hide()},
 					]}  
 				]
 				

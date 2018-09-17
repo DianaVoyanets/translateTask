@@ -2,6 +2,8 @@ import {JetView} from "webix-jet";
 
 export default class LoginView extends JetView{
 	config() {
+		const _ = this.app.getService("locale")._;
+
 		const login_register_form = {
 			view: "tabview",
 			cells: [
@@ -11,10 +13,10 @@ export default class LoginView extends JetView{
 						view: "form",
 						localId: "login:form",
 						elements:[
-							{ view:"text", name:"login", label:"User Name:",labelWidth:110,width: 350},
-							{ view:"text",name:"pass", label:"Password:",type:"password",labelWidth:110,width: 350},
+							{ view:"text", name:"login", label:_("User Name:"),labelWidth:110,width: 350},
+							{ view:"text",name:"pass", label:_("Password:"),type:"password",labelWidth:110,width: 350},
 							{rows:[
-								{view:"button", value:"Login", click:() => this.doLogin(), hotkey:"enter",width:100,align:"right"},
+								{view:"button", value:_("Login"), click:() => this.doLogin(), hotkey:"enter",width:100,align:"right"},
 							]}
 						],
 						rules:{
@@ -29,10 +31,10 @@ export default class LoginView extends JetView{
 						view: "form",
 						localId: "register:form",
 						elements: [
-							{ view:"text", name:"login", label:"User Name:",labelWidth:100,width: 350,invalidMessage: "Login can not be empty"},
-							{ view:"text",name:"pass", label:"Password:", type:"password",labelWidth:100,width: 350,invalidMessage: "Password can not be empty"},
+							{ view:"text", name:"login", label:_("User Name:"),labelWidth:100,width: 350,invalidMessage: "Login can not be empty"},
+							{ view:"text",name:"pass", label:_("Password:"), type:"password",labelWidth:100,width: 350,invalidMessage: "Password can not be empty"},
 							{rows:[
-								{ view:"button", value:"Register", click:() => this.doRegister(), hotkey:"enter",width:100,align:"right"}
+								{ view:"button", value:_("Register"), click:() => this.doRegister(), hotkey:"enter",width:100,align:"right"}
 							]},
 						],
 						rules:{
