@@ -40,6 +40,14 @@ var wordsGroup = sequelize.define("wordsGroup",{
 	] 
 });
 
+sequelize.sync({ force: true }).then(() => {
+
+	testResult.create({
+		result: "8",
+		groupName: "aqwrqwr"
+	});
+});
+
 
 module.exports = {
 	Users,Words,wordsGroup,testResult
