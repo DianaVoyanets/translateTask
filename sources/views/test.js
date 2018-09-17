@@ -5,17 +5,18 @@ import {testResultsCollection} from "models/testResult";
 
 export default class doTest extends JetView {
 	config() {
+		const _ = this.app.getService("locale")._;
+		
 		this.groupName = "";
 		this.buttonClick = null;
 		this.randomButton;
 		this.testNumber = 0;
 		this.result = 0;
-    
 		return {
 			rows: [
 				{
 					view: "label",
-					label: "Please choose the group of words:"
+					label: _("Please choose the group of words:")
 				},
 				{cols: [
 					{
@@ -26,23 +27,19 @@ export default class doTest extends JetView {
 						on: {
 							"onChange": () => {
 								this.groupName = this.$$("myrichselect").getText();
+								this.$$("start_again").hide();
+								this.testNumber = 0;
 								this.allButtonShow();
 								this.generateTest();
 							}
 						}
 					},
-					{view: "button",value: "Start again",width: 200,click: () =>{
-						this.testNumber = 0;
-						this.generateTest();
-						if(this.testNumber === 0) return;
-						this.allButtonShow();
-					}},
 					{view: "spacer"}
 				]
 				},
 				{
 					cols: [
-						{view: "label",label: "",align: "center",localId: "mylabel"}
+						{view: "label",label: "",align: "center",localId: "mylabel",css: "result_label"}
 					]
 				},
                 
@@ -56,6 +53,13 @@ export default class doTest extends JetView {
 						{ view: "button",localId:"2",hidden: true,value: "",width: 200,click: () => {
 							this.checkRightAnswer(this.randomButton,"2");
 							this.generateTest();
+						}},
+						{view: "button",localId:"start_again",value: _("Start again"),width: 200,hidden: true,click: () =>{
+							this.$$("start_again").hide();
+							this.testNumber = 0;
+							this.generateTest();
+							if (!this.testNumber) return;
+							this.allButtonShow();
 						}},
 						{ view: "spacer"}
 					]
@@ -76,7 +80,6 @@ export default class doTest extends JetView {
 					]
 				},
 				{view: "spacer"}
-
 			]
            
 		};   
@@ -88,22 +91,24 @@ export default class doTest extends JetView {
 	}
     
 	doAfterTest() {
+		const _ = this.app.getService("locale")._;
 		this.allButtonHide();
-		this.$$("mylabel").setValue("Your result:" + this.result);
+		this.$$("mylabel").setValue(_("Your result:") + this.result);
 		testResultsCollection.add({"result": this.result,"groupName": this.groupName});
 		this.testNumber = 0;
 		this.result = 0;
+		this.$$("start_again").show();
 	}
 
 	generateTest() {
-		if(!this.groupName)  {
+		if (!this.groupName)  {
 			webix.message({type:"error", text:"Please,select the words group"});
 			return;
 		}
 
 		this.countTestNumber();
         
-		if(this.countTestNumber() > 4) {
+		if (this.countTestNumber() > 5) {
 			this.doAfterTest();
 			return;
 		}
@@ -168,11 +173,11 @@ export default class doTest extends JetView {
 	}
     
 	checkRightAnswer(clickButton,rightAnswerButton) {
-		if(clickButton === rightAnswerButton) {
+		if (clickButton === rightAnswerButton) {
 			let clickButtonValue = this.$$(clickButton).getValue();
-			if(!this.randomWordGroup) {
-				if(this.singleWordGroup.translation === clickButtonValue) {
-					if(this.singleWordGroup.partOfSpeach === "Verb" || this.singleWordGroup.partOfSpeach ==="Noun"){
+			if (!this.randomWordGroup) {
+				if (this.singleWordGroup.translation === clickButtonValue) {
+					if (this.singleWordGroup.partOfSpeach === "Verb" || this.singleWordGroup.partOfSpeach === "Noun"){
 						this.result+=2;
 					} else {
 						this.result++;
@@ -184,8 +189,8 @@ export default class doTest extends JetView {
 					return;
 				}
 			}
-			if(this.randomWordGroup.translation === clickButtonValue) {
-				if(this.randomWordGroup.partOfSpeach === "Verb" || this.randomWordGroup.partOfSpeach==="Noun"){
+			if (this.randomWordGroup.translation === clickButtonValue) {
+				if (this.randomWordGroup.partOfSpeach === "Verb" || this.randomWordGroup.partOfSpeach === "Noun"){
 					this.result+=2;
 				} else {
 					this.result++;
