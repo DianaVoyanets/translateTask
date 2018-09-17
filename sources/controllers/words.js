@@ -2,12 +2,12 @@ var db = require("../../db");
 
 module.exports = {
 	getData : (req, res) => {
-		db.Words.findAll()
+		db.Word.findAll()
 			.then(data => res.json(data));
 	},
 
 	removeData: (req, res) => {
-		db.Words.findById(req.params.wordsId)
+		db.Word.findById(req.params.wordsId)
 			.then((company) => 
 				company.destroy()
 					.then(()=>
@@ -15,12 +15,12 @@ module.exports = {
 	},
     
 	addData: (req, res) => {
-		db.Words.create(req.body).then((obj) => 
+		db.Word.create(req.body).then((obj) => 
 			res.json({ id: obj.id }));
 	},
     
 	updateData: (req, res) => {
-		db.Words.findById(req.params.wordsId)
+		db.Word.findById(req.params.wordsId)
 			.then((company) => 
 				company.update(req.body))
 			.then(() => 

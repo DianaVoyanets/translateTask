@@ -1,10 +1,12 @@
 const express = require("express");
 const session = require("express-session");
 const bodyParser = require("body-parser");
-var cors = require("cors");
-var db = require("../translateTask/db");
+const cors = require("cors");
+
+const db = require("../translateTask/db");
 
 const app = express();
+
 app.use(express.static("public"));
 app.use(cors());
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -16,7 +18,6 @@ app.use(session({
 		maxAge: 60*60*1000 
 	}
 }));
-
 
 const words = require("../translateTask/sources/controllers/words");
 

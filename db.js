@@ -1,48 +1,50 @@
-var Sequelize = require("sequelize");
+const Sequelize = require("sequelize");
 
-var sequelize = new Sequelize("sampledb","root","1",{
-	host: "localhost",
-	dialect: "sqlite",
-	storage: "database.sqlite"
-});
+const sequelize = new Sequelize(
+	"sampledb", 
+	"root", 
+	"1", 
+	{
+		host: "localhost",
+		dialect: "sqlite",
+		storage: "database.sqlite"
+	}
+);
 
-var Users = sequelize.define("users",{
+const User = sequelize.define("user", {
 	login: Sequelize.STRING,
 	password: Sequelize.STRING,
 });
 
-
-var Words = sequelize.define("words", {
+const Word = sequelize.define("word", {
 	originWords: Sequelize.STRING,
 	translation: Sequelize.STRING, 
 	partOfSpeach: Sequelize.STRING,
 });
 
-var testResult = sequelize.define("testResult",{
+const testResult = sequelize.define("testResult", {
 	result: Sequelize.INTEGER,
 	groupName: Sequelize.STRING
 });
 
-
-var wordsGroup = sequelize.define("wordsGroup",{
+const wordsGroup = sequelize.define("wordsGroup",{
 	name: Sequelize.STRING,
 	dateOfCreation: Sequelize.DATE,
-	//user: Sequelize.STRING,
-	wordsIds: [
-		{
-			type: Sequelize.INTEGER,
-			references: {
-				model: "words",
-				key: "id",
-				deferrable: Sequelize.Deferrable.INITIALLY_IMMEDIATE
-			},
+	wordsIds: [{
+		type: Sequelize.INTEGER,
+		references: {
+			model: "Word",
+			key: "id",
+			deferrable: Sequelize.Deferrable.INITIALLY_IMMEDIATE
 		}
-	] 
+	}] 
 });
 
-sequelize.sync({ force: true }).then(() => {
+User.hasMany(wordsGroup, { as: 'WordsGroup' });
+User.hasMany(testResult, { as: 'TestResult' });
 
-	testResult.create({
+sequelize.sync({ force: true }).then(() => {
+	var result = testResult.create({
 		result: "8",
 		groupName: "aqwrqwr"
 	});
@@ -50,5 +52,5 @@ sequelize.sync({ force: true }).then(() => {
 
 
 module.exports = {
-	Users,Words,wordsGroup,testResult
+	User, Word, wordsGroup, testResult
 };

@@ -4,7 +4,7 @@ var db = require("../../db");
 module.exports = {
     
 	login: (req, res) => {
-		db.Users.findOne({ where: {login: req.body.user,password: req.body.pass}}).then(
+		db.User.findOne({ where: {login: req.body.user,password: req.body.pass}}).then(
 			user => {
 				if(user) {
 					const user = {login: req.body.user,password: req.body.pass};
@@ -27,12 +27,12 @@ module.exports = {
 	},
 
 	registration: (req,res) => {
-		db.Users.findAll({ where: {login: req.body.user,password: req.body.pass}}).then(
+		db.User.findAll({ where: {login: req.body.user,password: req.body.pass}}).then(
 			(user) => {
 				if(user.length !== 0) {
 					res.json({message:"The user with this login is already registered"});
 				} else {
-					db.Users.create({ 
+					db.User.create({ 
 						login: req.body.user,
 						password: req.body.pass
 					}).then(() => 
