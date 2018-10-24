@@ -71,7 +71,7 @@ export default class addGroupPopupView extends JetView{
 
 	}
 	
-	showWindow(id) {
+	showWindow() {
 		this.getRoot().show();
 	}
 	

@@ -28,18 +28,18 @@ export default class wordsGroupList extends JetView {
 								let selectedItem = this.$$("mylist").getSelectedItem();
 								let words = this.$$("mylist").getSelectedItem().wordsIds;
 								if (!words) {
-									this._jetPopupWord.showWindow(null,selectedItem);
+									this._addWordsPopupView.showWindow(null,selectedItem);
 								} 
 								else {
-										this._jetPopupWord.showWindow(words,selectedItem);
-									}
-									
+									this._addWordsPopupView.showWindow(words,selectedItem);
 								}
-							},
+									
+							}
+						},
 						{   view:"button",
 							type:"iconButton",
 							localId:"export_to_excel",
-							label: '<span class="webix_icon fa fa-file-excel-o"></span><span class="text">Export to Excel</span>',
+							label: "<span class=\"webix_icon fa fa-file-excel-o\"></span><span class=\"text\">Export to Excel</span>",
 							autowidth:true,
 							click: () => {
 								webix.toExcel(this.$$("datatable"));
@@ -61,56 +61,66 @@ export default class wordsGroupList extends JetView {
 	
 
 		var wordsList = {
-			rows: [{
-				view:"toolbar",
-				localId:"myToolbar",
-				cols:[
-					{ view:"label", id:"toolbar_label", label:_("Group of words")},
-				]},
-			{view: "search",localId: "search_input",placeholder: _("search of group name")},
-			{
-				view: "list",
-				localId: "mylist",
-				css: "list_height",
-				width: 300,
-				select:true,
-				template: (obj) =>  {
-					return (
-						`<span class='delete_button'>×</span>
-						 <span>${_("Group name:")} ${obj.name}</span><br>
-				         <span>${_("Count of words in a group:")} ${obj.wordsIds.length}</span>`
-					);
-				},	
-				onClick: {
-					"delete_button":(e,id) => {
-						webix.confirm({
-							text: "Do you still want to delete this group?",
-							callback: function(result) {
-								if(result) {
-									wordsGroup.remove(id); 
-									return false;
-								}
-							}
-						});
-					}
-	
+			rows: [
+				{
+					view:"toolbar",
+					localId:"myToolbar",
+					cols:[
+						{ view:"label", id:"toolbar_label", label:_("Group of words")},
+					]
 				},
-				on: {
-					onAfterSelect: (id)=>{
-						this.show("wordsGroupList");
-						this.setParam("id", id,true);
-						this.$$("add_word").show();
-						let word = this.$$("mylist").getSelectedItem().wordsIds;
-						if(word) {
-							this.$$("datatable").clearAll();
-							this.$$("datatable").parse(word);
-						}	
+				{   
+					view: "search",
+					localId: "search_input",
+					placeholder: _("search of group name")
+				},
+				{
+					view: "list",
+					localId: "mylist",
+					css: "list_height",
+					width: 300,
+					select:true,
+					template: (obj) =>  {
+						return (
+							`<span class='delete_button'>×</span>
+						 	<span>${_("Group name:")} ${obj.name}</span><br>
+				         	<span>${_("Count of words in a group:")} ${obj.wordsIds.length}</span>`
+						);
+					},	
+					onClick: {
+						"delete_button":(e,id) => {
+							webix.confirm({
+								text: "Do you still want to delete this group?",
+								callback: function(result) {
+									if(result) {
+										wordsGroup.remove(id); 
+										return false;
+									}
+								}
+							});
+						}
+	
+					},
+					on: {
+						onAfterSelect: (id) => {
+							this.show("wordsGroupList");
+							this.setParam("id", id,true);
+							this.$$("add_word").show();
+							let word = this.$$("mylist").getSelectedItem().wordsIds;
+							if(word) {
+								this.$$("datatable").clearAll();
+								this.$$("datatable").parse(word);
+							}	
+						}
 					}
-				}
-			},
-			{view: "button",value:_("Add new group"),localId: "add_group",click: ()=>this._jetPopup.showWindow()},
+				},
+				{
+					view: "button",
+					value:_("Add new group"),
+					localId: "add_group",
+					click: ()=>this._addGroupPopupView.showWindow()
+				},
 			]
-
 		};
         
 		return {
@@ -122,18 +132,18 @@ export default class wordsGroupList extends JetView {
 		}; 
 	}
 	init() {
-		this._jetPopup = this.ui(addGroupPopupView);
-		this._jetPopupWord = this.ui(addWordsPopupView);
+		this._addGroupPopupView = this.ui(addGroupPopupView);
+		this._addWordsPopupView = this.ui(addWordsPopupView);
 
 		wordsGroup.waitData.then(()=> {
 			this.$$("mylist").sync(wordsGroup);	
 			this.$$("mylist").select(wordsGroup.getFirstId());	
 		});
-		this.$$("search_input").attachEvent("onTimedKeyPress",function(){
+		this.$$("search_input").attachEvent("onTimedKeyPress",function() {
 			var value = this.getValue().toLowerCase();
-			this.$scope.$$("mylist").filter(function(obj){
-			  return obj.name.toLowerCase().indexOf(value) === 0;
-			})
+			this.$scope.$$("mylist").filter(function (obj) {
+				return obj.name.toLowerCase().indexOf(value) === 0;
+			});
 		});
 	}
 

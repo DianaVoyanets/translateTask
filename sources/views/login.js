@@ -4,7 +4,7 @@ export default class LoginView extends JetView{
 	config() {
 		const _ = this.app.getService("locale")._;
 
-		const login_register_form = {
+		const loginRegisterForm = {
 			view: "tabview",
 			cells: [
 				{
@@ -52,7 +52,7 @@ export default class LoginView extends JetView{
 				{view: "spacer"},
 				{cols: [
 					{view:"spacer"},
-					login_register_form,
+					loginRegisterForm,
 					{view: "spacer"}
 				],
 				},
@@ -94,11 +94,9 @@ export default class LoginView extends JetView{
 					user: data.login, 
 					pass: data.pass 
 				})
-				.then( response => {
-					debugger
-					response.json(),webix.message(response.json().message)
-				})
-			
+				.then(response => {
+					response.json(),webix.message(response.json().message);
+				});
 		}
 	}
 }

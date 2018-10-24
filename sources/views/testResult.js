@@ -15,6 +15,6 @@ export default class testResult extends JetView {
 		};
 	}
 	init() {
-		this.$$("mydatatable").sync(testResultsCollection);
+		this.getRoot().sync(testResultsCollection);
 	}
 } 

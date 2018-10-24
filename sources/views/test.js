@@ -231,8 +231,4 @@ export default class doTest extends JetView {
 		this.$$("3").show();
 		this.$$("4").show();
 	}
-
-	init() {
-    
-	}
 }

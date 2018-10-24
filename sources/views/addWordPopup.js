@@ -30,20 +30,28 @@ export default class addWordsPopupView extends JetView{
 					},
 					{cols:[
 						{view: "spacer"},
-						{view: "button",value: _("Add"),width: 120,click: () => {
-							let group = this.$$("myform").getValues();
-							group.wordsIds = this.$$("mydatatable").getSelectedItem();
-							wordsGroup.updateItem(group.id,group);
-							this.$$("formPopup").hide();
-							this.$$("myform").clear();
-							this.$$("mydatatable").unselectAll();
-						}},
+						{
+							view: "button",
+							value: _("Add"),
+							width: 120,
+							click: () => {
+								let group = this.$$("myform").getValues();
+								group.wordsIds = this.$$("mydatatable").getSelectedItem();
+								wordsGroup.updateItem(group.id,group);
+								this.$$("formPopup").hide();
+								this.$$("myform").clear();
+								this.$$("mydatatable").unselectAll();
+							}},
                         
-						{view: "button",value: _("Cancel"),width: 120,click: () => {
-							this.$$("formPopup").hide();
-							this.$$("myform").clear();
-							this.$$("mydatatable").unselectAll();
-						}}
+						{	
+							view: "button",
+							value: _("Cancel"),
+							width: 120,
+							click: () => {
+								this.$$("formPopup").hide();
+								this.$$("myform").clear();
+								this.$$("mydatatable").unselectAll();
+							}}
 					]}  
 				]
 				

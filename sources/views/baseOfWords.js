@@ -30,9 +30,9 @@ export default class BaseOfWords extends JetView {
                 
 				{cols:[
 					{ view:"button", localId:"add_button",value:_("Add"),
-						click:  (id) => {
+						click:  () => {
 							this.addData();
-					}},
+						}},
 				]},
 				{view: "spacer"}
 			]
