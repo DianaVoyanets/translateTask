@@ -13,15 +13,29 @@ export default class addWordsPopupView extends JetView{
 			scroll: false,
 			modal: true,
 			move:true,
-			localId: "formPopup",
 			head:_("Edit group of words"),
 			position:"center",
+			on: {
+				"onHide": () => {
+					this.getRoot().hide();
+					this._getDataTable().unselectAll();
+				}
+			},
 			body:{
 				view: "form",
-				localId: "myform",
 				elements: [
-					{view: "text",labelWidth: 120,label: _("Name of group:"),name: "name"},
-					{view: "datatable",id:"mydatatable",select:"row",multiselect: true,width:500,scrollY:false,
+					{
+						view: "text",
+						labelWidth: 120,
+						label: _("Name of group:"),
+						name: "name"
+					},
+					{
+						view: "datatable",
+						select:"row",
+						multiselect: true,
+						width:500,
+						scrollY:false,
 						columns: [
 							{id: "originWords",header: _("Origin word"),width: 150},
 							{id: "translation",header: _("Translation")},
@@ -35,12 +49,7 @@ export default class addWordsPopupView extends JetView{
 							value: _("Add"),
 							width: 120,
 							click: () => {
-								let group = this.$$("myform").getValues();
-								group.wordsIds = this.$$("mydatatable").getSelectedItem();
-								wordsGroup.updateItem(group.id,group);
-								this.$$("formPopup").hide();
-								this.$$("myform").clear();
-								this.$$("mydatatable").unselectAll();
+								this.addNewWordsInGroup();
 							}},
                         
 						{	
@@ -48,9 +57,7 @@ export default class addWordsPopupView extends JetView{
 							value: _("Cancel"),
 							width: 120,
 							click: () => {
-								this.$$("formPopup").hide();
-								this.$$("myform").clear();
-								this.$$("mydatatable").unselectAll();
+								this.getRoot().hide();
 							}}
 					]}  
 				]
@@ -58,27 +65,43 @@ export default class addWordsPopupView extends JetView{
 			}
 		};
 	}
+
+	addNewWordsInGroup() {
+		let group  = this._getForm().getValues();
+		let newWords = this._getDataTable().getSelectedItem();
+		group.words = newWords;
+		wordsGroup.updateItem(group.id,group);
+		this.getRoot().hide();
+	}
 	
 	showWindow(words,item) {
-		this.$$("mydatatable").unselectAll();
+		this._getDataTable().unselectAll();
 		if (!words) {
-			this.$$("myform").setValues(item);
+			this._getForm().setValues(item);
 			this.getRoot().show();
 			return;
 		}
         
-		this.$$("myform").setValues(item);
+		this._getForm().setValues(item);
 		if(Array.isArray(words)) {
 			for(var i = 0; i < words.length;i++) {
-				this.$$("mydatatable").select(words[i].id,true);
+				this._getDataTable().select(words[i].id,true);
 			}
 		} else {
-			this.$$("mydatatable").select(words.id);
+			this._getDataTable().select(words.id);
 		}
 		this.getRoot().show();
-	}	
+	}
+	
+	_getDataTable() {
+		return this.getRoot().queryView({view: "datatable"});
+	}
+
+	_getForm() {
+		return this.getRoot().queryView({view: "form"});
+	}
 	
 	init() {
-		this.$$("mydatatable").sync(baseOfWordsCollection);
+		this._getDataTable().sync(baseOfWordsCollection);
 	}
 }

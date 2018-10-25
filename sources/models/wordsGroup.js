@@ -3,8 +3,8 @@ export const wordsGroup = new webix.DataCollection({
 	save: "rest->/server/wordsGroup/",
 	scheme: {
 		$init(obj) {
-			if(typeof obj.wordsIds === "object") return;
-			obj.wordsIds = JSON.parse(obj.wordsIds);
+			if(typeof obj.words === "object") return;
+			obj.words = JSON.parse(obj.words);
 		}
 	}
 });

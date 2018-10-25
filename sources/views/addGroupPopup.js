@@ -8,7 +8,6 @@ export default class addGroupPopupView extends JetView{
 
 		var form = {
 			view:"form",
-			localId: "form",
 			width: 600,
 			gravity: 0.2,
 			elements: [
@@ -22,7 +21,6 @@ export default class addGroupPopupView extends JetView{
 
 		var datatable = {
 			view: "datatable",
-			localId: "mydatatable",
 			scroll: false,
 			select:true,
 			multiselect:true,
@@ -38,9 +36,14 @@ export default class addGroupPopupView extends JetView{
 			view:"window", 
 			height: 500,
 			move:true,
-			localId: "formPopup",
 			head:_("Add new group"),
 			position:"center",
+			on: {
+				"onHide": () => {
+					this._getForm().clear();
+					this._getDataTable().unselectAll();
+				}
+			},
 			body:{
 				rows: [
 					form,
@@ -48,21 +51,24 @@ export default class addGroupPopupView extends JetView{
 					{cols:[
 						{view: "spacer"},
 						{view: "button",value:_("Add"),width: 120,click: () => {
-							let groupValues = this.$$("form").getValues();
-							groupValues.wordsIds = this.$$("mydatatable").getSelectedItem();
-							if(this.$$("form").validate()) {
-								if(!groupValues.wordsIds) {
+							let groupValues = this._getForm().getValues();
+							groupValues.words = this._getDataTable().getSelectedItem();
+							if(this._getForm().validate()) {
+								if(!groupValues.words) {
 									webix.message({text:"Please select the words,which you want to add to the form",type: "error"});
 									return;
 								} else {
 									wordsGroup.add(groupValues);
-									this.$$("formPopup").hide();
-									this.$$("form").clear();
-									this.$$("mydatatable").unselectAll();
+									this.getRoot().hide();
 								}
 							}
 						}},
-						{view: "button",value: _("Cancel"),width: 120,click: () => this.$$("formPopup").hide()},
+						{
+							view: "button",
+							value: _("Cancel"),
+							width: 120,
+							click: () => this.getRoot().hide()
+						},
 					]}  
 				]
 				
@@ -74,8 +80,16 @@ export default class addGroupPopupView extends JetView{
 	showWindow() {
 		this.getRoot().show();
 	}
-	
+
+	_getDataTable() {
+		return this.getRoot().queryView({view: "datatable"});
+	}
+
+	_getForm() {
+		return this.getRoot().queryView({view: "form"});
+	}
+
 	init() {
-		this.$$("mydatatable").sync(baseOfWordsCollection);
+		this._getDataTable().sync(baseOfWordsCollection);
 	}
 }

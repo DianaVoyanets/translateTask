@@ -7,9 +7,8 @@ export default class BaseOfWords extends JetView {
 	config() {
 		const _ = this.app.getService("locale")._;
 		
-		var baseOfWords = {
+		var baseOfWordsDatatable = {
 			view: "datatable",
-			localId: "mydatatable",
 			columns: [
 				{id: "originWords",header: _("Origin word")},
 				{id: "translation",header: _("Translation")},
@@ -17,21 +16,21 @@ export default class BaseOfWords extends JetView {
 			],
 		};
 
-		var form  = {
+		var addNewWordsForm  = {
 			view: "form",
-			localId: "myform",
 			width: 400,
-			margin:20,
+			margin: 20,
 			select: true,
 			elements:[
 				{view:"text", name: "originWords",labelWidth: 130,label:_("Origin word:") },
 				{view:"text",name:  "translation", labelWidth: 130,label:_("Translation:") },
-				{view: "combo",name: "partOfSpeach",labelWidth: 130,options: {data:partOfSpech},label: _("Part of speech:")},
-                
+				{view: "combo",name: "partOfSpeach",labelWidth: 130,options: {data:partOfSpech},label: _("Part of speech:")},   
 				{cols:[
-					{ view:"button", localId:"add_button",value:_("Add"),
+					{ 	
+						view:"button", 
+						value:_("Add"),
 						click:  () => {
-							this.addData();
+							this.addNewWords();
 						}},
 				]},
 				{view: "spacer"}
@@ -39,16 +38,22 @@ export default class BaseOfWords extends JetView {
 		};
     
 		return {
-			cols: [baseOfWords,form]
+			cols: [baseOfWordsDatatable,addNewWordsForm]
 		};
 	}
 
-	addData() {
-		var data = this.$$("myform").getValues();
-		baseOfWordsCollection.add(data);
-		this.$$("myform").clear();
+	addNewWords() {
+		var valuesFromForm = this.getForm().getValues();
+		baseOfWordsCollection.add(valuesFromForm);
+		this.getForm().clear();
+	}
+
+	getForm() {
+		return this.getRoot().queryView({view: "form"});
 	}
 
 	init() {
-		this.$$("mydatatable").sync(baseOfWordsCollection);
-	}}
+		this.getRoot().queryView({view: "datatable"}).sync(baseOfWordsCollection);
+	}
+
+}

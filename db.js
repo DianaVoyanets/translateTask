@@ -30,7 +30,7 @@ const testResult = sequelize.define("testResult", {
 const wordsGroup = sequelize.define("wordsGroup",{
 	name: Sequelize.STRING,
 	dateOfCreation: Sequelize.DATE,
-	wordsIds: [{
+	words: [{
 		type: Sequelize.INTEGER,
 		references: {
 			model: "Word",
@@ -40,8 +40,8 @@ const wordsGroup = sequelize.define("wordsGroup",{
 	}] 
 });
 
-User.hasMany(wordsGroup, { as: 'WordsGroup' });
-User.hasMany(testResult, { as: 'TestResult' });
+User.hasMany(wordsGroup, { as: "WordsGroup" });
+User.hasMany(testResult, { as: "TestResult" });
 
 sequelize.sync({ force: true }).then(() => {
 	var result = testResult.create({

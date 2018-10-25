@@ -22,12 +22,13 @@ export default class ToolView extends JetView {
 				{	
 					view: "button",
 					value: _("Log out"),
-					width:200,
+					width: 200,
 					click: () => this.show("/logout")
 				}
 			]
 		};
 	}
+	
 	toggleLanguage() {
 		const langs = this.app.getService("locale");
 		const value = this.getRoot().queryView({ name:"lang" }).getValue();
