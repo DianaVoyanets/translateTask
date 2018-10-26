@@ -66,6 +66,10 @@ export default class addWordsPopupView extends JetView{
 		};
 	}
 
+	init() {
+		this._getDataTable().sync(baseOfWordsCollection);
+	}
+
 	addNewWordsInGroup() {
 		let group  = this._getForm().getValues();
 		let newWords = this._getDataTable().getSelectedItem();
@@ -81,8 +85,6 @@ export default class addWordsPopupView extends JetView{
 			this.getRoot().show();
 			return;
 		}
-        
-		this._getForm().setValues(item);
 		if(Array.isArray(words)) {
 			for(var i = 0; i < words.length;i++) {
 				this._getDataTable().select(words[i].id,true);
@@ -90,6 +92,7 @@ export default class addWordsPopupView extends JetView{
 		} else {
 			this._getDataTable().select(words.id);
 		}
+		this._getForm().setValues(item);
 		this.getRoot().show();
 	}
 	
@@ -99,9 +102,5 @@ export default class addWordsPopupView extends JetView{
 
 	_getForm() {
 		return this.getRoot().queryView({view: "form"});
-	}
-	
-	init() {
-		this._getDataTable().sync(baseOfWordsCollection);
 	}
 }

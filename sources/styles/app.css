@@ -115,12 +115,17 @@
 }
 
 .list_height .webix_list_item {
-	height: 80px !important;
+	height: 120px !important;
 } 
 
 .delete_button {
     float: right;
-    font-size: 25px;
+	font-size: 25px;
+	
+}
+
+.delete_button:hover {
+	color: #1CA1C1;
 }
 
 .result_label {

@@ -7,7 +7,6 @@ export default class MyApp extends JetApp {
 		const defaults = {
 			id 		: APPNAME,
 			version : VERSION,
-			// router 	: BUILD_AS_MODULE ? EmptyRouter : HashRouter,
 			debug 	: !PRODUCTION,
 			start 	: "/startPage/wordsGroupList"
 		};

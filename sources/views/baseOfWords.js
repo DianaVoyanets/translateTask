@@ -12,7 +12,7 @@ export default class BaseOfWords extends JetView {
 			columns: [
 				{id: "originWords",header: _("Origin word")},
 				{id: "translation",header: _("Translation")},
-				{id: "partOfSpeach",header: _("Part of speech"),width:150},         
+				{id: "partOfSpeach",header: _("Part of speech"),width:150},    
 			],
 		};
 
@@ -22,9 +22,9 @@ export default class BaseOfWords extends JetView {
 			margin: 20,
 			select: true,
 			elements:[
-				{view:"text", name: "originWords",labelWidth: 130,label:_("Origin word:") },
-				{view:"text",name:  "translation", labelWidth: 130,label:_("Translation:") },
-				{view: "combo",name: "partOfSpeach",labelWidth: 130,options: {data:partOfSpech},label: _("Part of speech:")},   
+				{view:"text", name: "originWords",labelWidth: 130,label:_("Origin word:"),invalidMessage: "Origin word can not be empty" },
+				{view:"text",name:  "translation", labelWidth: 130,label:_("Translation:"),invalidMessage: "Translation can not be empty"  },
+				{view: "combo",name: "partOfSpeach",labelWidth: 130,options: {data:partOfSpech},label: _("Part of speech:"),invalidMessage: "partOfSpeach can not be empty"},   
 				{cols:[
 					{ 	
 						view:"button", 
@@ -34,7 +34,12 @@ export default class BaseOfWords extends JetView {
 						}},
 				]},
 				{view: "spacer"}
-			]
+			],
+			rules:{
+				"originWords": webix.rules.isNotEmpty,
+				"translation":webix.rules.isNotEmpty,
+				"partOfSpeach": webix.rules.isNotEmpty
+			}
 		};
     
 		return {
@@ -43,9 +48,12 @@ export default class BaseOfWords extends JetView {
 	}
 
 	addNewWords() {
-		var valuesFromForm = this.getForm().getValues();
-		baseOfWordsCollection.add(valuesFromForm);
-		this.getForm().clear();
+		const $form = this.getForm();
+		if($form.validate()) {
+			var valuesFromForm = this.getForm().getValues();
+			baseOfWordsCollection.add(valuesFromForm);
+			this.getForm().clear();
+		}
 	}
 
 	getForm() {

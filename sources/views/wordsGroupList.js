@@ -24,6 +24,9 @@ export default class wordsGroupList extends JetView {
 							width: 170,
 							click: () => {
 								let selectedItem = this._getWordsGroupList().getSelectedItem();
+								if(!selectedItem) {
+									webix.message("Please,select the group, which you want to edit!");
+								}
 								let words = this._getWordsGroupList().getSelectedItem().words;
 								if (!words) {
 									this._addWordsPopupView.showWindow(null,selectedItem);
@@ -77,8 +80,9 @@ export default class wordsGroupList extends JetView {
 					template: (obj) =>  {
 						return (
 							`<span class='delete_button'>×</span>
-						 	 <span>${_("Group name:")} ${obj.name}</span><br>
-				         	 <span>${_("Count of words in a group:")} ${Array.isArray(obj.words) ? obj.words.length : 1}</span>`
+						 	 <span><b>${_("Group name:")}</b> ${obj.name}</span><br>
+							 <span><b>${_("Count of words in a group:")}</b> ${Array.isArray(obj.words) ? obj.words.length : 1}</span><br>
+							 <span><b>${_("Date of creation:")}</b> ${obj.dateOfCreation}</span>`
 						);
 					},	
 					onClick: {
@@ -117,6 +121,19 @@ export default class wordsGroupList extends JetView {
 		}; 
 	}
 
+	
+	init() {
+		this._addGroupPopupView = this.ui(addGroupPopupView);
+		this._addWordsPopupView = this.ui(addWordsPopupView);
+
+		wordsGroup.waitData.then(()=> {
+			this._getWordsGroupList().sync(wordsGroup);	
+			this._getWordsGroupList().select(wordsGroup.getFirstId());	
+		});
+
+		this.searchWordsGroup();
+	}
+
 	_getWordsGroupList() {
 		return this.getRoot().queryView({view: "list"});
 	}
@@ -139,26 +156,14 @@ export default class wordsGroupList extends JetView {
 		return this.$$("addNewWordsButton").show();
 	}
 
-	searchWordGroup() {
+	searchWordsGroup() {
 		const seurchInput = this.getRoot().queryView({view: "search"});
-		seurchInput.attachEvent("onTimedKeyPress", () => {
-			var value = this.$scope.getValue().toLowerCase();
-			this._getWordsGroupList().filter(function (obj) {
+		seurchInput.attachEvent("onTimedKeyPress", function(){
+			var value = this.getValue().toLowerCase();
+			this.$scope._getWordsGroupList().filter(function (obj) {
 				return obj.name.toLowerCase().indexOf(value) === 0;
 			});
 		});
-	}
-
-	init() {
-		this._addGroupPopupView = this.ui(addGroupPopupView);
-		this._addWordsPopupView = this.ui(addWordsPopupView);
-
-		wordsGroup.waitData.then(()=> {
-			this._getWordsGroupList().sync(wordsGroup);	
-			this._getWordsGroupList().select(wordsGroup.getFirstId());	
-		});
-
-		this.searchWordGroup();
 	}
 
 }

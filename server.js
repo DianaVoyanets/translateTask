@@ -33,7 +33,7 @@ app.delete("/server/wordsGroup/:wordsGroupId",wordsGroup.removeData);
 app.post("/server/wordsGroup",wordsGroup.addData);
 app.get("/server/wordsGroup",wordsGroup.getData);
 
-const Users = require("../translateTask/sources/controllers/user")
+const Users = require("../translateTask/sources/controllers/user");
 // const testResult = require("./sources/controllers/testResults");
 
 //app.put("server/user/:userId",Users.updateData);

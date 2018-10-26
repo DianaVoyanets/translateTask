@@ -36,7 +36,7 @@ module.exports = {
 						login: req.body.user,
 						password: req.body.pass
 					}).then(() => 
-						res.json({ message: "You're successs register!"})
+						res.json({ message: "You're succsess register!"})
 					);
 
 				}

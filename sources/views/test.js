@@ -238,6 +238,11 @@ export default class doTest extends JetView {
 		for (var i = 0; i < buttonIds.length; i++) {
 			let randomSpeachWordId = this.getRandom(this.getNeedBaseOfWords().length); 
 			let randomSpeachWord = this.getNeedBaseOfWords()[randomSpeachWordId];
+			if(this.getNeedBaseOfWords().length === 0) {
+				// TODO text webix.message
+				webix.message({type:"error", text:"Base of words is empty.Please, add in base of words more words"});
+				return;
+			}
 			this.$$(buttonIds[i]).setValue(randomSpeachWord.translation);
 		}
 	}

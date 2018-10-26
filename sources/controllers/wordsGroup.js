@@ -21,11 +21,11 @@ module.exports = {
 	},
     
 	updateData: (req, res) => {
-		db.wordsGroup.findById(req.params.wordsId)
-			.then((company) => 
-				company.update(req.body))
+		db.wordsGroup.findById(req.params.wordsGroupId)
+			.then((wordGroup) => 
+				wordGroup.update(req.body)
+			)
 			.then(() => 
 				res.json({}));
-	}
-    
+	} 
 };

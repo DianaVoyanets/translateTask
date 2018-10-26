@@ -13,10 +13,30 @@ export default class LoginView extends JetView{
 						view: "form",
 						localId: "login:form",
 						elements:[
-							{ view:"text", name:"login", label:_("User Name:"),labelWidth:110,width: 350},
-							{ view:"text",name:"pass", label:_("Password:"),type:"password",labelWidth:110,width: 350},
+							{ 
+								view:"text", 
+								name:"login", 
+								label:_("User Name:"),
+								labelWidth:110,
+								width: 350
+							},
+							{ 
+								view:"text",
+								name:"pass", 
+								label:_("Password:"),
+								type:"password",
+								labelWidth:110,
+								width: 350
+							},
 							{rows:[
-								{view:"button", value:_("Login"), click:() => this.doLogin(), hotkey:"enter",width:100,align:"right"},
+								{
+									view:"button", 
+									value:_("Login"), 
+									hotkey:"enter",
+									width:100,
+									align:"right",
+									click:() => this.doLogin(), 
+								},
 							]}
 						],
 						rules:{
@@ -31,10 +51,32 @@ export default class LoginView extends JetView{
 						view: "form",
 						localId: "register:form",
 						elements: [
-							{ view:"text", name:"login", label:_("User Name:"),labelWidth:100,width: 350,invalidMessage: "Login can not be empty"},
-							{ view:"text",name:"pass", label:_("Password:"), type:"password",labelWidth:100,width: 350,invalidMessage: "Password can not be empty"},
+							{ 
+								view:"text", 
+								name:"login", 
+								label:_("User Name:"),
+								labelWidth:100,
+								width: 350,
+								invalidMessage: "Login can not be empty"
+							},
+							{ 
+								view:"text",
+								name:"pass", 
+								label:_("Password:"), 
+								type:"password",
+								labelWidth:100,
+								width: 350,
+								invalidMessage: "Password can not be empty"
+							},
 							{rows:[
-								{ view:"button", value:_("Register"), click:() => this.doRegister(), hotkey:"enter",width:100,align:"right"}
+								{ 
+									view:"button",
+									value:_("Register"), 
+									click:() => this.doRegister(),
+									hotkey:"enter",
+									width:100,
+									align:"right"
+								}
 							]},
 						],
 						rules:{
@@ -69,7 +111,7 @@ export default class LoginView extends JetView{
 		const user = this.app.getService("user");
 		const form = this.$$("login:form");
 
-		if (form.validate()){
+		if (form.validate()) {
 			const data = form.getValues();
             
 			user.login(data.login, data.pass)
