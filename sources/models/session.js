@@ -3,13 +3,13 @@ function status() {
 		.then(response => response.json());
 }
 
-function login(user, pass){
+function login(user, pass) {
 	return webix.ajax().post("/server/user/login", {
 		user, pass
 	}).then(response => response.json());
 }
 
-function logout(){
+function logout() {
 	return webix.ajax().post("/server/user/logout")
 		.then(response => response.json());
 }

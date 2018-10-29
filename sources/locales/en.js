@@ -34,5 +34,5 @@ export default {
 	"User Name:" : "User Name:",
 	"Password": "Password:",
 	"Name of group:": "Name of group:",
-	"Edit group": "Edit group"
+	"Edit group": "Edit group",
 };

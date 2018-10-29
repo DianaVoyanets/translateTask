@@ -17,11 +17,6 @@ module.exports = {
 		);
 	},
     
-	getUSer : (req, res) => {
-		db.User.findAll()
-			.then(data => res.json(data));
-	},
-
 	loginStatus: (req, res) => {
 		res.send(req.session.user || null);
 	},
@@ -35,7 +30,7 @@ module.exports = {
 		db.User.findAll({ where: {login: req.body.user,password: req.body.pass}}).then(
 			(user) => {
 				if(user.length !== 0) {
-					res.json({message:"The user with this login is already registered"});
+					res.status(422).send({message: "The user with this login is already registered"});
 				} else {
 					db.User.create({ 
 						login: req.body.user,

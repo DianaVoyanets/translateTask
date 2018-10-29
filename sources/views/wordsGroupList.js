@@ -19,7 +19,7 @@ export default class wordsGroupList extends JetView {
 							type:"iconButton",
 							icon: "plus",
 							label: _("Edit group"),
-							localId: "addNewWordsButton",
+							localId: "newWord:button",
 							hidden: true,
 							autowidth: true,
 							click: () => this.showPopup()
@@ -143,7 +143,7 @@ export default class wordsGroupList extends JetView {
 	}
 
 	showAddNewWordsButton() {
-		return this.$$("addNewWordsButton").show();
+		return this.$$("newWord:button").show();
 	}
 
 	searchWordsGroup() {

@@ -17,33 +17,89 @@ export default class doTest extends JetView {
 		return {
 			rows: [
 				{
-					view: "label",
-					label: _("Please choose the group of words:")
+					view: "spacer"
 				},
-				{cols: [
-					{
-						view: "richselect",
-						options: { 
-							body: {
-								template:"#name#", data: wordsGroup
-							} 
+				{
+					view: "spacer"
+				},
+				{
+					cols: [
+						{
+							view: "spacer"
 						},
-						width: 200,
-						on: {
-							"onChange": () => {
-								this.onAfterWordGroupSelect();
-							}
+						{rows: [
+
+							{
+								view: "label",
+								label: "Please choose the group of words:",
+								align: "center"
+							},
+							{
+								view: "richselect",
+								align: "center",
+								width: 300,
+								options: { 
+									body: {
+										template:"#name#", data: wordsGroup
+									} 
+								},
+								on: {
+									"onChange": () => {
+										this.onAfterWordGroupSelect();
+									}
+								}
+							},
+						]
+						},
+						{
+							view: "spacer"
 						}
-					},
-					{view: "spacer"}
-				]
+					]
+				},
+				{
+					view: "spacer"
+				},
+				{
+					cols: [
+						{
+							view: "spacer"
+						},
+						{
+							rows: [
+								{
+									view: "label",
+									hidden: true,
+									label: "Please choose the language for test:",
+									align: "center"
+								},
+								{
+									view:"segmented", hidden: true, width: 300,options:[
+										{ id:"one", value:"Russia" },
+										{ id:"two", value:"English"},
+									]
+								},
+								
+							]
+						},
+						{
+							view: "spacer"
+						}
+					]
+				},
+				{},
+				{
+					cols: [
+						{view: "spacer"},
+						{view: "button", hidden: true, value: "Start test",width: 250},
+						{view: "spacer"}
+					]
 				},
 				{
 					cols: [
 						{
 							view: "label",
+							align:"center",
 							label: "",
-							align: "center",
 							localId: "mylabel",
 							css: "result_label"
 						}
@@ -51,7 +107,7 @@ export default class doTest extends JetView {
 				},
                 
 				{
-					margin:30,cols: [
+					margin:30, cols: [
 						{ view:"spacer"},
 						{ 
 							view: "button",
@@ -150,14 +206,14 @@ export default class doTest extends JetView {
 	}
 
 	generateTest() {
+		this.countTestNumber();
+
 		if (!this.groupName)  {
 			this.app.showError({message: "Please,select the words group"});	
 			return;
 		}
 
-		this.countTestNumber();
-        
-		if (this.countTestNumber() > 5) {
+		if (this.countTestNumber() > 10) {
 			this.showTestResult();
 			this.showStartAgainButton();
 			return;
@@ -167,19 +223,17 @@ export default class doTest extends JetView {
 			this.allButtonValueClear();
 			this.setLabelWordForQuestion(this.getSelectedGroup());
 
-			// if in base words collection isn't part of speach === part of speach set in label
-			// TODO error popup
 			if (this.getNeedBaseOfWords().length === 0) {
 				this.getNeedBaseOfWords().push(this.randomWordGroup);
 			}
 			this.setButtonRightAnswer();
+			this.setButtonsWrongAnswer();
 
 		} else {
 			this.allButtonHide();
 			this.app.showError({message: "Please,add more than one word in this group"});	
 			return;
 		}
-		this.setButtonWrongAnswer();
 	}
 	
 	checkRightAnswer(rightAnswerButton,clickButton) {
@@ -229,7 +283,7 @@ export default class doTest extends JetView {
 		this.buttonIndexForRemove = randomIndex;
 	}
 
-	setButtonWrongAnswer() {
+	setButtonsWrongAnswer() {
 		let indexButtonForDelete = this.buttonIndexForRemove;
 		let buttonIds = this.getButtonIds();
 
@@ -238,7 +292,6 @@ export default class doTest extends JetView {
 			let randomSpeachWordId = this.getRandom(this.getNeedBaseOfWords().length); 
 			let randomSpeachWord = this.getNeedBaseOfWords()[randomSpeachWordId];
 			if(this.getNeedBaseOfWords().length === 0) {
-				// TODO text webix.message
 				this.app.showError({message: "Base of words is empty.Please, add in base more words"});	
 				return;
 			}

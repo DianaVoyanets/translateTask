@@ -13,8 +13,8 @@ export default class addNewGroupPopupView extends JetView{
 			elements: [
 				{
 					view: "text",
-					labelWidth: 120,
 					label: _("Name of group:"),
+					labelWidth: 150,
 					name: "name",
 					invalidMessage: "Name of group can not be empty"
 				}
@@ -27,8 +27,8 @@ export default class addNewGroupPopupView extends JetView{
 		var datatable = {
 			view: "datatable",
 			scroll: true,
-			select:true,
-			multiselect:true,
+			select: true,
+			multiselect: true,
 			width: 600,
 			columns: [
 				{id: "originWords",header: _("Origin word")},
@@ -39,8 +39,9 @@ export default class addNewGroupPopupView extends JetView{
 		
 		return {
 			view:"window", 
-			height: 500,
-			move:true,
+			width: 460,
+			height: 400,
+			modal: true,
 			head:_("Add new group"),
 			position:"center",
 			on: {
@@ -68,8 +69,7 @@ export default class addNewGroupPopupView extends JetView{
 							click: () => this.getRoot().hide()
 						},
 					]}  
-				]
-				
+				]	
 			}
 		};
 	}

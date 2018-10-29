@@ -15,7 +15,7 @@
 	color:red;
 }
 .status_good{
-	color:green;
+	color:green; 
 }
 
 /*login form*/
@@ -25,7 +25,7 @@
 }
 .invalid_login{
     -webkit-animation: formshake .5s linear;
-}
+} 
 @-webkit-keyframes formshake {
     8%, 41% {
         -webkit-transform: translateX(-10px);
@@ -42,14 +42,14 @@
     0%, 100% {
         -webkit-transform: translateX(0);
     }
-}
+} 
 
 /*siberia theme*/
 .webix_layout_toolbar.webix_toolbar.form-bottom-bar{
 	background: #34495E;
 }
 
-.center{
+.center {
 	text-align: center;
 }
 
@@ -62,9 +62,9 @@
 }
 .webix_layout_clean{
 	background: white;
-}
+} 
 
-/* unradius borders */
+/*unradius borders */
 .webix_menu {
 	border-radius: 0px;
 }
@@ -76,14 +76,17 @@
 	background: #34495e;
 	color:#ddd;
 }
+
 .app-left-panel .webix_menu .webix_list_item.webix_selected{
 	color:#fff;
 }
-.app-left-panel .webix_menu .webix_list_item:hover{
+
+.app-left-panel .webix_menu .webix_list_item:hover {
 	background-color: #f5f5f5;
 	color: #000;
 }
-.app-left-panel .webix_header .webix_template{
+
+.app-left-panel .webix_header .webix_template {
 	background-color: #34495e;
 	border-bottom:1px solid white;
 	text-align: center;
@@ -96,7 +99,7 @@
 }
 .app-right-panel .webix_layout_wide{
 	background: #fff;
-}
+} 
 
 
 /* sync status */
@@ -122,7 +125,7 @@
     float: right;
 	font-size: 25px;
 	
-}
+} 
 
 .delete_button:hover {
 	color: #1CA1C1;
@@ -130,12 +133,12 @@
 
 .result_label {
 	font-size: 24px;
-}
+} 
 
 .logged-user {
-        display: block;
-        text-align: center;
-        line-height: 27px;
-        font-size: 17px;
-        white-space: nowrap;
-}
+    display: block;
+    text-align: center;
+    line-height: 27px;
+    font-size: 17px;
+    white-space: nowrap;
+} 

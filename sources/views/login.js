@@ -2,7 +2,6 @@ import {JetView} from "webix-jet";
 
 export default class LoginView extends JetView {
 	config() {
-		const _ = this.app.getService("locale")._;
 
 		const loginRegisterForm = {
 			view: "tabview",
@@ -16,22 +15,24 @@ export default class LoginView extends JetView {
 							{ 
 								view:"text", 
 								name:"login", 
-								label:_("User Name:"),
+								label: "User Name:",
 								labelWidth:110,
-								width: 350
+								width: 350,
+								invalidMessage: "login can not be empty"
 							},
 							{ 
 								view:"text",
 								name:"pass", 
-								label:_("Password:"),
+								label: "Password:",
 								type:"password",
 								labelWidth:110,
-								width: 350
+								width: 350,
+								invalidMessage: "password can not be empty"
 							},
 							{rows:[
 								{
 									view:"button", 
-									value:_("Login"), 
+									value: "Login", 
 									hotkey:"enter",
 									width:100,
 									align:"right",
@@ -54,7 +55,7 @@ export default class LoginView extends JetView {
 							{ 
 								view:"text", 
 								name:"login", 
-								label:_("User Name:"),
+								label: "User Name:",
 								labelWidth:100,
 								width: 350,
 								invalidMessage: "Login can not be empty"
@@ -62,7 +63,7 @@ export default class LoginView extends JetView {
 							{ 
 								view:"text",
 								name:"pass", 
-								label:_("Password:"), 
+								label: "Password:", 
 								type:"password",
 								labelWidth:100,
 								width: 350,
@@ -71,7 +72,7 @@ export default class LoginView extends JetView {
 							{rows:[
 								{ 
 									view:"button",
-									value:_("Register"), 
+									value: "Register", 
 									click:() => this.doRegister(),
 									hotkey:"enter",
 									width:100,
@@ -103,7 +104,7 @@ export default class LoginView extends JetView {
 		};
 	}
 
-	init(view){
+	init (view){
 		view.$view.querySelector("input").focus();
 	}
 
@@ -112,12 +113,14 @@ export default class LoginView extends JetView {
 		const form = this.$$("login:form");
 
 		if (form.validate()) {
-			const data = form.getValues();
+			const dataFromFormInputs = form.getValues();
             
-			user.login(data.login, data.pass)
-				.catch(() => {
+			user.login(dataFromFormInputs.login, dataFromFormInputs.pass)
+				.catch( () => {
 					form.elements.pass.focus();
-					webix.delay(() => this.app.showError({message: "Incorrect login or password"}));
+					webix.delay(() => { 
+						this.app.showError({message: "Incorrect login or password"});
+					});
 				});
 		}
 	}
@@ -134,8 +137,11 @@ export default class LoginView extends JetView {
 					user: data.login, 
 					pass: data.pass 
 				})
-				.then(response => {
-					response.json(),webix.message(response.json().message);
+				.then( response => {
+					webix.message(response.json().message);
+				}).
+				fail((err) => {
+					this.app.showError({message: JSON.parse(err.response).message});
 				});
 		}
 	}

@@ -35,13 +35,11 @@ app.post("/server/wordsGroup",wordsGroup.addData);
 app.get("/server/wordsGroup",wordsGroup.getData);
 
 const Users = require("../translateTask/sources/controllers/user");
-// const testResult = require("./sources/controllers/testResults");
 
-//app.put("server/user/:userId",Users.updateData);
 app.post("/server/user/logout",Users.logout);
-app.get("/server/user",Users.getUSer);
 app.post("/server/user/login",Users.login);
 app.post("/server/login/status",Users.loginStatus);
+app.get("/server/login/status",Users.loginStatus);
 app.post("/server/user/register",Users.registration);
 
 const testResult = require("../translateTask/sources/controllers/testResults");

@@ -1,5 +1,4 @@
 import {JetView} from "webix-jet";
-import {User} from "models/user";
 
 export default class ToolView extends JetView {
 	config(){
@@ -23,11 +22,10 @@ export default class ToolView extends JetView {
 				},
 				{
 					view: "template",
-					localId: "user_name_template",
 					template: (obj) => {
 						return `<span class='logged-user'>${obj ? obj.login : ""}</span>`;
 					},
-					url: "server/user",
+					url: "/server/login/status",
 					width: 120
 				},
 				{	

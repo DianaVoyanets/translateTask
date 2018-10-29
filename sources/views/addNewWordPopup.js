@@ -12,7 +12,6 @@ export default class addNewWordsPopupView extends JetView{
 			height: 400,
 			scroll: false,
 			modal: true,
-			move:true,
 			head:_("Edit group"),
 			position:"center",
 			on: {

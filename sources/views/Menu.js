@@ -16,10 +16,10 @@ export default class MenuView extends JetView {
 			]
 		};
 	}
+	
 	init(sidebar) {
-		this.use(plugins.Menu,
-			{
-				id:sidebar,
-			});
+		this.use(plugins.Menu,{
+			id:sidebar,
+		});
 	}
 }

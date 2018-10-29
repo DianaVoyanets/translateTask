@@ -66,22 +66,21 @@ export default class BaseOfWords extends JetView {
 			cols: [baseOfWordsDatatable,addNewWordsForm]
 		};
 	}
-
-	addNewWords() {
-		const $form = this.getForm();
-		if($form.validate()) {
-			var valuesFromForm = this.getForm().getValues();
-			baseOfWordsCollection.add(valuesFromForm);
-			this.getForm().clear();
-		}
-	}
-
-	getForm() {
-		return this.getRoot().queryView({view: "form"});
-	}
-
+	
 	init() {
 		this.getRoot().queryView({view: "datatable"}).sync(baseOfWordsCollection);
 	}
 
+	addNewWords() {
+		const $form = this._getForm();
+		if($form.validate()) {
+			var valuesFromForm = this._getForm().getValues();
+			baseOfWordsCollection.add(valuesFromForm);
+			this._getForm().clear();
+		}
+	}
+
+	_getForm() {
+		return this.getRoot().queryView({view: "form"});
+	}
 }
