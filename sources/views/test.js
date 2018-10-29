@@ -167,8 +167,6 @@ export default class doTest extends JetView {
 			this.allButtonValueClear();
 			this.setLabelWordForQuestion(this.getSelectedGroup());
 
-			// if in base words collection isn't part of speach === part of speach set in label
-			// TODO error popup
 			if (this.getNeedBaseOfWords().length === 0) {
 				this.getNeedBaseOfWords().push(this.randomWordGroup);
 			}
