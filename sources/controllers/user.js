@@ -16,6 +16,11 @@ module.exports = {
 			}
 		);
 	},
+    
+	getUSer : (req, res) => {
+		db.User.findAll()
+			.then(data => res.json(data));
+	},
 
 	loginStatus: (req, res) => {
 		res.send(req.session.user || null);

@@ -115,7 +115,7 @@
 }
 
 .list_height .webix_list_item {
-	height: 120px !important;
+	height: 100px !important;
 } 
 
 .delete_button {
@@ -130,4 +130,12 @@
 
 .result_label {
 	font-size: 24px;
+}
+
+.logged-user {
+        display: block;
+        text-align: center;
+        line-height: 27px;
+        font-size: 17px;
+        white-space: nowrap;
 }

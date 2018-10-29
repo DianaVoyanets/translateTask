@@ -9,6 +9,7 @@ export default class BaseOfWords extends JetView {
 		
 		var baseOfWordsDatatable = {
 			view: "datatable",
+			scroll: true,
 			columns: [
 				{id: "originWords",header: _("Origin word")},
 				{id: "translation",header: _("Translation")},
@@ -22,9 +23,28 @@ export default class BaseOfWords extends JetView {
 			margin: 20,
 			select: true,
 			elements:[
-				{view:"text", name: "originWords",labelWidth: 130,label:_("Origin word:"),invalidMessage: "Origin word can not be empty" },
-				{view:"text",name:  "translation", labelWidth: 130,label:_("Translation:"),invalidMessage: "Translation can not be empty"  },
-				{view: "combo",name: "partOfSpeach",labelWidth: 130,options: {data:partOfSpech},label: _("Part of speech:"),invalidMessage: "partOfSpeach can not be empty"},   
+				{
+					view:"text", 
+					name: "originWords",
+					labelWidth: 130,
+					label:_("Origin word:"),
+					invalidMessage: "Origin word can not be empty" 
+				},
+				{
+					view:"text",
+					name:  "translation",
+					labelWidth: 130,
+					label:_("Translation:"),
+					invalidMessage: "Translation can not be empty"
+				},
+				{
+					view: "combo",
+					name: "partOfSpeach",
+					labelWidth: 130,
+					options: {data:partOfSpech},
+					label: _("Part of speech:"),
+					invalidMessage: "partOfSpeach can not be empty"
+				},   
 				{cols:[
 					{ 	
 						view:"button", 

@@ -8,13 +8,19 @@ export default class MyApp extends JetApp {
 			id 		: APPNAME,
 			version : VERSION,
 			debug 	: !PRODUCTION,
-			start 	: "/startPage/wordsGroupList"
+			start 	: "/startPage/baseOfWords"
 		};
 
         super({ ...defaults, ...config });
 		this.use(plugins.User, { model : session });
 		this.use(plugins.Locale, { lang: "en" });
-	}
+    }
+    
+    showError({title = 'Error', message = '', level = 'error'}) {
+        return new Promise((resolve) => {
+            webix.alert({title, text: message, type: `alert-${level}`, callback: resolve});
+        });
+    }
 }
 
 if (!BUILD_AS_MODULE) {

@@ -4,12 +4,13 @@
   "description": "Webix Jet App",
   "main": "sources/myapp.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "eslint sources/",
     "build": "webpack --env.production true",
     "module": "webpack --env.production true --env.module true",
     "standalone": "webpack --env.production true --env.module true --env.standalone true",
-    "start": "webpack-dev-server --open"
+    "front": "webpack-dev-server --open --color",
+    "server": "node server.js",
+    "start": "concurrently --kill-others-on-fail --names \"API_SERVER,WEBPACK\" -c \"blue.bold,magenta.bold\" \"npm run server\" \"npm run front\""
   },
   "keywords": [
     "webix",
@@ -35,6 +36,7 @@
   },
   "dependencies": {
     "body-parser": "^1.18.3",
+    "concurrently": "^4.0.1",
     "cors": "^2.8.4",
     "express": "^4.16.3",
     "express-session": "^1.15.6",

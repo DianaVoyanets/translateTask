@@ -1,14 +1,16 @@
 import {JetView} from "webix-jet";
+import {User} from "models/user";
 
 export default class ToolView extends JetView {
 	config(){
 		const _ = this.app.getService("locale")._;
-		const theme = this.app.config.theme;
 
 		return {
-			view:"toolbar", css:theme,
-			height:56,
-			elements:[
+			view: "layout",
+			type: "clean",
+			borderless: true,
+			css: "bg_opacity",
+			cols: [
 				{
 					name:"lang", 
 					optionWidth: 120, 
@@ -17,7 +19,16 @@ export default class ToolView extends JetView {
 						{ id:"en", value:_("English")},
 						{ id:"ru", value:_("Russia")}
 					], 
-					click:() => this.toggleLanguage()
+					click: () => this.toggleLanguage()
+				},
+				{
+					view: "template",
+					localId: "user_name_template",
+					template: (obj) => {
+						return `<span class='logged-user'>${obj ? obj.login : ""}</span>`;
+					},
+					url: "server/user",
+					width: 120
 				},
 				{	
 					view: "button",
@@ -28,7 +39,7 @@ export default class ToolView extends JetView {
 			]
 		};
 	}
-	
+    
 	toggleLanguage() {
 		const langs = this.app.getService("locale");
 		const value = this.getRoot().queryView({ name:"lang" }).getValue();

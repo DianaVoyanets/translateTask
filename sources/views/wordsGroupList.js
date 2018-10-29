@@ -1,6 +1,6 @@
 import {JetView} from "webix-jet";
-import addGroupPopupView from "views/addGroupPopup";
-import addWordsPopupView from "views/addWordPopup";
+import addNewGroupPopupView from "views/addNewGroupPopup";
+import addNewWordsPopupView from "views/addNewWordPopup";
 import {wordsGroup} from "models/wordsGroup";
 
 export default class wordsGroupList extends JetView {
@@ -21,21 +21,8 @@ export default class wordsGroupList extends JetView {
 							label: _("Edit group"),
 							localId: "addNewWordsButton",
 							hidden: true,
-							width: 170,
-							click: () => {
-								let selectedItem = this._getWordsGroupList().getSelectedItem();
-								if(!selectedItem) {
-									webix.message("Please,select the group, which you want to edit!");
-								}
-								let words = this._getWordsGroupList().getSelectedItem().words;
-								if (!words) {
-									this._addWordsPopupView.showWindow(null,selectedItem);
-								} 
-								else {
-									this._addWordsPopupView.showWindow(words,selectedItem);
-								}
-									
-							}
+							autowidth: true,
+							click: () => this.showPopup()
 						},
 						{   
 							view:"button",
@@ -50,6 +37,7 @@ export default class wordsGroupList extends JetView {
 				},
 				{
 					view: "datatable",
+					scroll:true,
 					columns: [
 						{id: "originWords",header: _("Origin word")},
 						{id: "translation",header: _("Translation")},
@@ -58,14 +46,16 @@ export default class wordsGroupList extends JetView {
 				}
 			]
 		};
-	
 
 		var wordsList = {
 			rows: [
 				{
 					view:"toolbar",
 					cols:[
-						{ view:"label", label:_("Group of words")},
+						{ 
+							view:"label",
+							label:_("Group of words")
+						},
 					]
 				},
 				{   
@@ -81,8 +71,8 @@ export default class wordsGroupList extends JetView {
 						return (
 							`<span class='delete_button'>×</span>
 						 	 <span><b>${_("Group name:")}</b> ${obj.name}</span><br>
-							 <span><b>${_("Count of words in a group:")}</b> ${Array.isArray(obj.words) ? obj.words.length : 1}</span><br>
-							 <span><b>${_("Date of creation:")}</b> ${obj.dateOfCreation}</span>`
+							 <span><b>${_("Count of words in a group:")}</b> ${Array.isArray(obj.words) ? obj.words.length : 1}</span><br>`
+					
 						);
 					},	
 					onClick: {
@@ -108,7 +98,7 @@ export default class wordsGroupList extends JetView {
 				{
 					view: "button",
 					value:_("Add new group"),
-					click: () => this._addGroupPopupView.showWindow()
+					click: () => this._addNewGroupPopupView.showWindow()
 				},
 			]
 		};
@@ -121,16 +111,16 @@ export default class wordsGroupList extends JetView {
 		}; 
 	}
 
-	
 	init() {
-		this._addGroupPopupView = this.ui(addGroupPopupView);
-		this._addWordsPopupView = this.ui(addWordsPopupView);
+		this._addNewGroupPopupView = this.ui(addNewGroupPopupView);
+		this._addNewWordsPopupView = this.ui(addNewWordsPopupView);
 
 		wordsGroup.waitData.then(()=> {
 			this._getWordsGroupList().sync(wordsGroup);	
 			this._getWordsGroupList().select(wordsGroup.getFirstId());	
 		});
 
+		this.on(this.app,"onAfterAddNewGroup",() => this._getWordsGroupList().select(wordsGroup.getLastId()));
 		this.searchWordsGroup();
 	}
 
@@ -165,5 +155,16 @@ export default class wordsGroupList extends JetView {
 			});
 		});
 	}
-
+    
+	showPopup() {
+		let selectedGroup = this._getWordsGroupList().getSelectedItem();
+		if(!selectedGroup) {
+			webix.message("Please,select the group, which you want to edit!");
+		}
+		let wordsInGroup = this._getWordsGroupList().getSelectedItem().words;
+		this._addNewWordsPopupView.showWindow({
+			words: wordsInGroup,
+			group: selectedGroup
+		});
+	}	
 }

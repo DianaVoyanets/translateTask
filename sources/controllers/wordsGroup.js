@@ -3,29 +3,42 @@ var db = require("../../db");
 
 module.exports = {
 	getData : (req, res) => {
-		db.wordsGroup.findAll()
-			.then(data => res.json(data));
+		db.User
+			.findOne({ where: req.session.user })
+			.then((user) => {
+				user.getWordsGroup().then((wg) => res.json(wg));
+			});
 	},
 
 	removeData: (req, res) => {
 		db.wordsGroup.findById(req.params.wordsGroupId)
-			.then((company) => 
-				company.destroy()
+			.then((wordsGroup) => 
+				wordsGroup.destroy()
 					.then(()=>
 						res.json({})));
 	},
     
 	addData: (req, res) => {
-		db.wordsGroup.create(req.body).then((obj) => 
-			res.json({ id: obj.id }));
+		db.wordsGroup
+			.create(req.body)
+			.then((wg) => {
+				db.User
+					.findOne({ where: req.session.user })
+					.then(user => Promise.resolve(user.setWordsGroup(wg)));
+				return res.json({ id: wg.id });
+			});
 	},
     
 	updateData: (req, res) => {
-		db.wordsGroup.findById(req.params.wordsGroupId)
-			.then((wordGroup) => 
-				wordGroup.update(req.body)
+		db.wordsGroup
+			.findById(req.params.wordsGroupId)
+			.then((wg) => 
+				wg.update(req.body).then((uwg) => {
+					db.User
+						.findOne({ where: req.session.user })
+						.then(user => Promise.resolve(user.setWordsGroup(uwg)));
+				})
 			)
-			.then(() => 
-				res.json({}));
+			.then(() => res.json({}));
 	} 
 };

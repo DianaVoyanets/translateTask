@@ -2,13 +2,22 @@ var db = require("../../db");
 
 module.exports = {
 	getData : (req, res) => {
-		db.testResult.findAll()
-			.then(data => res.json(data));
+		db.User
+			.findOne({ where: req.session.user })
+			.then((user) => 
+				user.getTestResult().then((tr) => res.json(tr))
+			);
 	},
     
 	addData: (req, res) => {
-		db.testResult.create(req.body).then((obj) => 
-			res.json({ id: obj.id }));
+		db.testResult
+			.create(req.body)
+			.then((wg) => {
+				db.User
+					.findOne({ where: req.session.user })
+					.then(user => Promise.resolve(user.setTestResult(wg)));
+				return res.json({ id: wg.id });
+			});
 	},
     
 };

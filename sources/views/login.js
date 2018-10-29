@@ -1,6 +1,6 @@
 import {JetView} from "webix-jet";
 
-export default class LoginView extends JetView{
+export default class LoginView extends JetView {
 	config() {
 		const _ = this.app.getService("locale")._;
 
@@ -115,11 +115,9 @@ export default class LoginView extends JetView{
 			const data = form.getValues();
             
 			user.login(data.login, data.pass)
-				.catch(function() {
+				.catch(() => {
 					form.elements.pass.focus();
-					webix.delay(function() {
-						webix.message("Incorrect login or password");
-					});
+					webix.delay(() => this.app.showError({message: "Incorrect login or password"}));
 				});
 		}
 	}

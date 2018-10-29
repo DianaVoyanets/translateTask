@@ -40,17 +40,11 @@ const wordsGroup = sequelize.define("wordsGroup",{
 	}] 
 });
 
-// User.hasMany(wordsGroup, { as: "WordsGroup" });
-// User.hasMany(testResult, { as: "TestResult" });
-
-sequelize.sync({ force: true }).then(() => {
-	var result = testResult.create({
-		result: "8",
-		groupName: "aqwrqwr"
-	});
-});
-
+User.hasMany(wordsGroup, {as: "WordsGroup"});
+wordsGroup.belongsTo(User);
+User.hasMany(testResult, {as: "TestResult"});
+testResult.belongsTo(User);
 
 module.exports = {
-	User, Word, wordsGroup, testResult
+	sequelize, User, Word, wordsGroup, testResult
 };

@@ -2,18 +2,18 @@ import {JetView} from "webix-jet";
 import {baseOfWordsCollection} from "models/baseOfWordsCollection";
 import {wordsGroup} from "models/wordsGroup";
 
-export default class addWordsPopupView extends JetView{
+export default class addNewWordsPopupView extends JetView{
 	config() {	
 		const _ = this.app.getService("locale")._;
         
 		return  {
 			view:"window", 
-			width: 500,
+			width: 460,
 			height: 400,
 			scroll: false,
 			modal: true,
 			move:true,
-			head:_("Edit group of words"),
+			head:_("Edit group"),
 			position:"center",
 			on: {
 				"onHide": () => {
@@ -34,8 +34,7 @@ export default class addWordsPopupView extends JetView{
 						view: "datatable",
 						select:"row",
 						multiselect: true,
-						width:500,
-						scrollY:false,
+						scroll: true,
 						columns: [
 							{id: "originWords",header: _("Origin word"),width: 150},
 							{id: "translation",header: _("Translation")},
@@ -78,10 +77,13 @@ export default class addWordsPopupView extends JetView{
 		this.getRoot().hide();
 	}
 	
-	showWindow(words,item) {
+	showWindow(optionsForShow) {
+		const words = optionsForShow.words;
+		const selectedGroup = optionsForShow.group;
+
 		this._getDataTable().unselectAll();
-		if (!words) {
-			this._getForm().setValues(item);
+		if (!optionsForShow.words) {
+			this._getForm().setValues(selectedGroup);
 			this.getRoot().show();
 			return;
 		}
@@ -92,7 +94,7 @@ export default class addWordsPopupView extends JetView{
 		} else {
 			this._getDataTable().select(words.id);
 		}
-		this._getForm().setValues(item);
+		this._getForm().setValues(selectedGroup);
 		this.getRoot().show();
 	}
 	

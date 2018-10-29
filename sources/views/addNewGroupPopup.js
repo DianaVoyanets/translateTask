@@ -2,7 +2,7 @@ import {JetView} from "webix-jet";
 import {baseOfWordsCollection} from "models/baseOfWordsCollection";
 import {wordsGroup} from "models/wordsGroup";
 
-export default class addGroupPopupView extends JetView{
+export default class addNewGroupPopupView extends JetView{
 	config() {
 		const _ = this.app.getService("locale")._;
 
@@ -11,8 +11,13 @@ export default class addGroupPopupView extends JetView{
 			width: 600,
 			gravity: 0.2,
 			elements: [
-				{view: "text",labelWidth: 120,label: _("Name of group:"),name: "name",invalidMessage: "Name can not be empty"},
-				{view:"datepicker",labelWidth: 120,label: _("Date of creation:"),value: new Date(),name: "dateOfCreation"},
+				{
+					view: "text",
+					labelWidth: 120,
+					label: _("Name of group:"),
+					name: "name",
+					invalidMessage: "Name of group can not be empty"
+				}
 			],
 			rules: {
 				"name": webix.rules.isNotEmpty
@@ -21,7 +26,7 @@ export default class addGroupPopupView extends JetView{
 
 		var datatable = {
 			view: "datatable",
-			scroll: false,
+			scroll: true,
 			select:true,
 			multiselect:true,
 			width: 600,
@@ -50,19 +55,12 @@ export default class addGroupPopupView extends JetView{
 					datatable,
 					{cols:[
 						{view: "spacer"},
-						{view: "button",value:_("Add"),width: 120,click: () => {
-							let groupValues = this._getForm().getValues();
-							groupValues.words = this._getDataTable().getSelectedItem();
-							if(this._getForm().validate()) {
-								if(!groupValues.words) {
-									webix.message({text:"Please select the words,which you want to add to the form",type: "error"});
-									return;
-								} else {
-									wordsGroup.add(groupValues);
-									this.getRoot().hide();
-								}
-							}
-						}},
+						{
+							view: "button",
+							value:_("Add"),
+							width: 120,
+							click: () => this.addGroup()
+						},
 						{
 							view: "button",
 							value: _("Cancel"),
@@ -74,9 +72,27 @@ export default class addGroupPopupView extends JetView{
 				
 			}
 		};
-
 	}
-	
+    
+	init() {
+		this._getDataTable().sync(baseOfWordsCollection);
+	}
+
+	addGroup() {
+		let group = this._getForm().getValues();
+		group.words = this._getDataTable().getSelectedItem();
+		if(this._getForm().validate()) {
+			if(!group.words) {
+				this.app.showError({message: "Please select the words,which you want to add to the words group"});
+				return;
+			} else {
+				wordsGroup.add(group);
+				this.app.callEvent("onAfterAddNewGroup");
+				this.getRoot().hide();
+			}
+		}
+	}
+
 	showWindow() {
 		this.getRoot().show();
 	}
@@ -87,9 +103,5 @@ export default class addGroupPopupView extends JetView{
 
 	_getForm() {
 		return this.getRoot().queryView({view: "form"});
-	}
-
-	init() {
-		this._getDataTable().sync(baseOfWordsCollection);
 	}
 }

@@ -151,7 +151,7 @@ export default class doTest extends JetView {
 
 	generateTest() {
 		if (!this.groupName)  {
-			webix.message({type:"error", text:"Please,select the words group"});
+			this.app.showError({message: "Please,select the words group"});	
 			return;
 		}
 
@@ -176,8 +176,7 @@ export default class doTest extends JetView {
 
 		} else {
 			this.allButtonHide();
-			// TODO create error popup	
-			webix.message({type:"error", text:"Please,add more than one word in this group"});
+			this.app.showError({message: "Please,add more than one word in this group"});	
 			return;
 		}
 		this.setButtonWrongAnswer();
@@ -240,14 +239,13 @@ export default class doTest extends JetView {
 			let randomSpeachWord = this.getNeedBaseOfWords()[randomSpeachWordId];
 			if(this.getNeedBaseOfWords().length === 0) {
 				// TODO text webix.message
-				webix.message({type:"error", text:"Base of words is empty.Please, add in base of words more words"});
+				this.app.showError({message: "Base of words is empty.Please, add in base more words"});	
 				return;
 			}
 			this.$$(buttonIds[i]).setValue(randomSpeachWord.translation);
 		}
 	}
 
-	// return array of words which part of speach === ppart of spach question word
 	getNeedBaseOfWords() {
 		let partOfSpeachWords = baseOfWordsCollection.find(obj => {
 			return obj.partOfSpeach === this.randomWordGroup.partOfSpeach 

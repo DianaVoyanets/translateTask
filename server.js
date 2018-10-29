@@ -3,7 +3,8 @@ const session = require("express-session");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 
-const db = require("../translateTask/db");
+const { sequelize } = require("../translateTask/db");
+sequelize.sync({ force: true });
 
 const app = express();
 
@@ -38,6 +39,7 @@ const Users = require("../translateTask/sources/controllers/user");
 
 //app.put("server/user/:userId",Users.updateData);
 app.post("/server/user/logout",Users.logout);
+app.get("/server/user",Users.getUSer);
 app.post("/server/user/login",Users.login);
 app.post("/server/login/status",Users.loginStatus);
 app.post("/server/user/register",Users.registration);
