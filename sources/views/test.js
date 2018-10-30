@@ -3,11 +3,14 @@ import {wordsGroup} from "models/wordsGroup";
 import {baseOfWordsCollection} from "models/baseOfWordsCollection";
 import {testResultsCollection} from "models/testResult";
 
+
 export default class doTest extends JetView {
+
 	config() {
 		const _ = this.app.getService("locale")._;
 		
 		this.groupName = "";
+		this.selectedValue = "";
 		this.testNumber = 0;
 		this.totalResult = 0;
 		this.randomWordId;
@@ -16,84 +19,87 @@ export default class doTest extends JetView {
 		this.rightAnswerButton;
 		return {
 			rows: [
-				{
-					view: "spacer"
-				},
-				{
-					view: "spacer"
-				},
-				{
-					cols: [
-						{
-							view: "spacer"
-						},
-						{rows: [
-
-							{
-								view: "label",
-								label: "Please choose the group of words:",
-								align: "center"
-							},
-							{
-								view: "richselect",
-								align: "center",
-								width: 300,
-								options: { 
-									body: {
-										template:"#name#", data: wordsGroup
-									} 
-								},
-								on: {
-									"onChange": () => {
-										this.onAfterWordGroupSelect();
-									}
-								}
-							},
-						]
-						},
-						{
-							view: "spacer"
-						}
-					]
-				},
-				{
-					view: "spacer"
-				},
-				{
-					cols: [
-						{
-							view: "spacer"
-						},
-						{
-							rows: [
+				{localId: "hidden:layout", rows: [
+					{view: "spacer"},
+					{view: "spacer"},
+					{
+						cols: [
+							{view: "spacer"},
+							{rows: [
+								{view: "spacer"},
 								{
 									view: "label",
-									hidden: true,
-									label: "Please choose the language for test:",
+									localId: "richselect:label",
+									label: "Please choose the group of words:",
 									align: "center"
 								},
 								{
-									view:"segmented", hidden: true, width: 300,options:[
-										{ id:"one", value:"Russia" },
-										{ id:"two", value:"English"},
-									]
+									view: "richselect",
+									align: "center",
+									width: 300,
+									options: { 
+										body: {
+											template:"#name#", data: wordsGroup
+										} 
+									},
+									on: {
+										"onChange": () => {
+											this.$$("segmented:label").show();
+											this._getSegmentedView().show();
+											this.getRoot().queryView({view: "richselect"}).hide();
+											this.$$("richselect:label").hide();
+											this.$$("start:button").show();
+										}
+									}
 								},
-								
 							]
-						},
-						{
-							view: "spacer"
-						}
-					]
-				},
-				{},
-				{
-					cols: [
-						{view: "spacer"},
-						{view: "button", hidden: true, value: "Start test",width: 250},
-						{view: "spacer"}
-					]
-				},
+							},
+							{view: "spacer"}
+						]
+					},
+					{
+						cols: [
+							{view: "spacer"},
+							{
+								rows: [
+									{
+										view: "label",
+										localId: "segmented:label",
+										hidden: true,
+										label: "Please choose the language for test:",
+										align: "center"
+									},
+									{
+										view:"segmented", hidden: true, width: 300,options:[
+											{ id:"Russia", value:"Russia" },
+											{ id:"English", value:"English"},
+										],
+									},
+									
+								]
+							},
+							{view: "spacer"}
+						]
+					},
+					{},
+					{
+						cols: [
+							{view: "spacer"},
+							{
+								view: "button", 
+								localId: "start:button",
+								hidden: true, 
+								value: "Start test",
+								width: 250,
+								click: () => {
+									this.$$("hidden:layout").hide();
+									this.onAfterStartTestButtonClick();
+								} 
+							},
+							{view: "spacer"}
+						]
+					}]},
+
 				{
 					cols: [
 						{
@@ -105,10 +111,9 @@ export default class doTest extends JetView {
 						}
 					]
 				},
-                
 				{
 					margin:30, cols: [
-						{ view:"spacer"},
+						{view: "spacer"},
 						{ 
 							view: "button",
 							localId:"1",
@@ -137,15 +142,27 @@ export default class doTest extends JetView {
 							width: 200,
 							hidden: true,
 							click: () => {
-								this.startAgain();
-							}},
-						{ view: "spacer"}
+								this.onAfterStartTestButtonClick();
+							}
+						},
+						// {
+						// 	view: "button",
+						// 	localId: "another_group",
+						// 	value: "Another group",
+						// 	width: 200,
+						// 	hidden: true,
+						// 	// TODO
+						// 	click: () => { 
+						// 		this.show("/startPage/test");
+						// 	}
+						// },
+						{view: "spacer"}
 					]
 				},
 
 				{
 					margin: 30,cols: [
-						{view:"spacer"},
+						{view: "spacer"},
 						{ 
 							view: "button",
 							localId:"3",
@@ -180,7 +197,8 @@ export default class doTest extends JetView {
 		return this.testNumber++; 
 	}
 
-	onAfterWordGroupSelect() {
+	onAfterStartTestButtonClick() {
+		this.selectedValue = this._getSegmentedView().getValue();
 		this.groupName = this.getRoot().queryView({view: "richselect"}).getText();
 		this.hideStartAgainButton();
 		this.testNumber = 0;
@@ -231,51 +249,71 @@ export default class doTest extends JetView {
 
 		} else {
 			this.allButtonHide();
-			this.app.showError({message: "Please,add more than one word in this group"});	
-			return;
+			// TODO 
+			// webix.alert({
+			// 	title: "Close",
+			// 	text: "Add more words to the group",
+			// 	type:"alert-error",
+			// 	callback: (result) => {
+			// 		if (result) {
+			// 			alert("asdad");
+			// 		} 
+			// 	}
+			// });
+			// return;
 		}
 	}
 	
 	checkRightAnswer(rightAnswerButton,clickButton) {
 		if (clickButton === rightAnswerButton) {
 			let clickButtonValue = this.$$(clickButton).getValue();
-			if (!this.randomWordGroup) {
-				if (this.singleWordGroup.translation === clickButtonValue) {
-					if (this.singleWordGroup.partOfSpeach === "Verb" || this.singleWordGroup.partOfSpeach === "Noun"){
+			if (this.selectedValue === "Russia") {
+				if (this.randomWordGroup.originWords === clickButtonValue) {
+					if (this.randomWordGroup.partOfSpeach === "Verb" || this.randomWordGroup.partOfSpeach === "Noun"){
 						this.totalResult += 2;
 					} else {
 						this.totalResult++;
 					}
 					webix.message("You're right");
 					return;
-				} else {
-					webix.message({type:"error", text:"False"});
+				}
+			} else {
+				if (this.randomWordGroup.translation === clickButtonValue) {
+					if (this.randomWordGroup.partOfSpeach === "Verb" || this.randomWordGroup.partOfSpeach === "Noun"){
+						this.totalResult += 2;
+					} else {
+						this.totalResult++;
+					}
+					webix.message("You're right");
 					return;
 				}
 			}
-			if (this.randomWordGroup.translation === clickButtonValue) {
-				if (this.randomWordGroup.partOfSpeach === "Verb" || this.randomWordGroup.partOfSpeach === "Noun"){
-					this.totalResult += 2;
-				} else {
-					this.totalResult++;
-				}
-			}
-			webix.message("You're right");
 		} else {
 			webix.message({type:"error", text:"False"});
+			return;
 		}
 	}
 
 	setLabelWordForQuestion (selectedGroup) {
 		this.randomWordId = this.getRandomRange(0, selectedGroup.words.length);
 		this.randomWordGroup = selectedGroup.words[this.randomWordId];
-            
-		let randomWordfromSelectedGroup = this.randomWordGroup.originWords;
+		let randomWordfromSelectedGroup;
+
+		if(this.selectedValue === "Russia") {
+			randomWordfromSelectedGroup = this.randomWordGroup.translation;
+		} else {
+			randomWordfromSelectedGroup = this.randomWordGroup.originWords;
+		}
 		this.$$("mylabel").setValue(randomWordfromSelectedGroup);
 	}
 
 	setButtonRightAnswer() {
-		let randomRightTranslateWord = this.randomWordGroup.translation;
+		let randomRightTranslateWord;
+		if (this.selectedValue === "Russia") {
+			randomRightTranslateWord = this.randomWordGroup.originWords;
+		} else {
+			randomRightTranslateWord = this.randomWordGroup.translation;
+		}
 		let randomIndex = this.getRandomButtonIndex();
 		let randomButtonId = this.getButtonIds()[randomIndex];
 		this.$$(randomButtonId).setValue(randomRightTranslateWord);
@@ -291,11 +329,15 @@ export default class doTest extends JetView {
 		for (var i = 0; i < buttonIds.length; i++) {
 			let randomSpeachWordId = this.getRandom(this.getNeedBaseOfWords().length); 
 			let randomSpeachWord = this.getNeedBaseOfWords()[randomSpeachWordId];
-			if(this.getNeedBaseOfWords().length === 0) {
+			if (this.getNeedBaseOfWords().length === 0) {
 				this.app.showError({message: "Base of words is empty.Please, add in base more words"});	
 				return;
 			}
-			this.$$(buttonIds[i]).setValue(randomSpeachWord.translation);
+			if (this.selectedValue === "Russia") {
+				this.$$(buttonIds[i]).setValue(randomSpeachWord.originWords);
+			} else {
+				this.$$(buttonIds[i]).setValue(randomSpeachWord.translation);
+			}
 		}
 	}
 
@@ -332,6 +374,7 @@ export default class doTest extends JetView {
 
 	showStartAgainButton() {
 		this.$$("start_again").show();
+		this.$$("another_group").show();
 	}
 
 	hideStartAgainButton() {
@@ -357,5 +400,9 @@ export default class doTest extends JetView {
 		this.$$("2").show();
 		this.$$("3").show();
 		this.$$("4").show();
+	}
+
+	_getSegmentedView() {
+		return this.getRoot().queryView({view: "segmented"});
 	}
 }

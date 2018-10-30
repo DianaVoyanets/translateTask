@@ -1,43 +1,43 @@
 
-var db = require("../../db");
+const db = require("../../db");
 
 module.exports = {
-	getData : (req, res) => {
+	getData: (req, res) => {
 		db.User
 			.findOne({ where: req.session.user })
-			.then((user) => {
-				user.getWordsGroup().then((wg) => res.json(wg));
-			});
+			.then(user => user.getWordsGroup())
+			.then(wordGroup => res.json(wordGroup));
 	},
 
 	removeData: (req, res) => {
-		db.wordsGroup.findById(req.params.wordsGroupId)
-			.then((wordsGroup) => 
-				wordsGroup.destroy()
-					.then(()=>
-						res.json({})));
-	},
-    
-	addData: (req, res) => {
-		db.wordsGroup
-			.create(req.body)
-			.then((wg) => {
-				db.User
-					.findOne({ where: req.session.user })
-					.then(user => Promise.resolve(user.setWordsGroup(wg)));
-				return res.json({ id: wg.id });
-			});
-	},
-    
-	updateData: (req, res) => {
 		db.wordsGroup
 			.findById(req.params.wordsGroupId)
-			.then((wg) => 
-				wg.update(req.body).then((uwg) => {
-					db.User
-						.findOne({ where: req.session.user })
-						.then(user => Promise.resolve(user.setWordsGroup(uwg)));
-				})
+			.then(wordsGroup => wordsGroup.destroy())
+			.then(() => res.json({}));
+	},
+	addData: (req, res) => {
+		let createWordGroup = (user) => {
+			req.body.userId = user.id;
+			return req.body;
+		};
+
+		db.User
+			.findOne({ where: req.session.user })
+			.then(user => db.wordsGroup.create(createWordGroup(user), { include: [db.User] }))
+			.then(wordGroup => res.json({ id: wordGroup.id }));
+	},
+	updateData: (req, res) => {
+		let updateWordsGroup = (user) => {
+			req.body.userId = user.id;
+			return req.body;
+		};
+
+		db.User
+			.findOne({ where: req.session.user })
+			.then((user) => 
+				db.wordsGroup
+					.findById(req.params.wordsGroupId)
+					.then((wordGroup) => wordGroup.update(updateWordsGroup(user), { include: [db.User] }))
 			)
 			.then(() => res.json({}));
 	} 

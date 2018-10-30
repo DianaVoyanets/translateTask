@@ -4,7 +4,7 @@ const bodyParser = require("body-parser");
 const cors = require("cors");
 
 const { sequelize } = require("../translateTask/db");
-sequelize.sync({ force: true });
+sequelize.sync();
 
 const app = express();
 
@@ -37,6 +37,8 @@ app.get("/server/wordsGroup",wordsGroup.getData);
 const Users = require("../translateTask/sources/controllers/user");
 
 app.post("/server/user/logout",Users.logout);
+
+app.get("/server/user",Users.getUser);
 app.post("/server/user/login",Users.login);
 app.post("/server/login/status",Users.loginStatus);
 app.get("/server/login/status",Users.loginStatus);
