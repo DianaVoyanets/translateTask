@@ -2,13 +2,13 @@ import {JetView} from "webix-jet";
 import {baseOfWordsCollection} from "models/baseOfWordsCollection";
 import {wordsGroup} from "models/wordsGroup";
 
-export default class addNewWordsPopupView extends JetView{
+export default class editGroupPopup extends JetView{
 	config() {	
 		const _ = this.app.getService("locale")._;
         
 		return  {
 			view:"window", 
-			width: 460,
+			width: 501,
 			height: 400,
 			scroll: false,
 			modal: true,
@@ -36,7 +36,7 @@ export default class addNewWordsPopupView extends JetView{
 						scroll: true,
 						columns: [
 							{id: "originWords",header: _("Origin word"),width: 150},
-							{id: "translation",header: _("Translation")},
+							{id: "translation",header: _("Translation"),width: 150},
 							{id: "partOfSpeach",header: _("Part of speech"),width: 150},    
 						],
 					},

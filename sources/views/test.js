@@ -7,7 +7,7 @@ import {testResultsCollection} from "models/testResult";
 export default class doTest extends JetView {
 
 	config() {
-		const _ = this.app.getService("locale")._;
+		// const _ = this.app.getService("locale")._;
 		
 		this.groupName = "";
 		this.selectedValue = "";
@@ -17,180 +17,215 @@ export default class doTest extends JetView {
 		this.randomWordGroup;
 		this.buttonIndexForRemove;
 		this.rightAnswerButton;
-		return {
+        
+		let richSelectView = {
 			rows: [
-				{localId: "hidden:layout", rows: [
-					{view: "spacer"},
-					{view: "spacer"},
+				{
+					view: "richselect",
+					localId: "group:richselect",
+					label: "Please select a group of words:",
+					labelPosition: "top",
+					align: "center",
+					width: 300,
+					options: { 
+						body: {
+							template:"#name#", data: wordsGroup
+						} 
+					},
+					on: {
+						"onChange": (selectedGroup) => {
+							if(!selectedGroup) return;
+							let countWordsInGroup = wordsGroup.getItem(selectedGroup).words.length;
+							if (!countWordsInGroup) {
+								this.app.showError({message: "Please add more words to the group" });
+								return;
+							}
+							this.$$("group:richselect").hide();
+							this.$$("segmented:layout").show();
+						}
+					}
+				},
+			]
+		};
+
+        
+		let segmentedView = {
+			rows: [{
+				hidden: true,
+				localId: "segmented:layout",
+				rows: [
+					{
+						view:"segmented",
+						label: "Please select language to pass the test:",
+						labelPosition: "top",  
+						width: 300,
+						options:[
+							{ id:"Russia", value:"Russia" },
+							{ id:"English", value:"English"},
+						],
+					},
+					{view: "spacer", height: 30},
 					{
 						cols: [
 							{view: "spacer"},
-							{rows: [
+							{
+								view: "button",
+								localId: "start:test",
+								value: "Start test",
+								width: 200,
+								click: () => {
+									this.$$("segmented:layout").hide();
+									this.onAfterStartTestButtonClick();
+								}
+							},
+							{view: "spacer"}
+						]
+					}  
+				]
+			}      
+			]
+		};
+        
+		let resultLayout = {
+			rows: [
+				{
+					cols: [
+						{view: "spacer"},
+						{
+							view: "label",
+							localId: "test:result",
+							css: "test_result_style",
+							width: 200,
+							align: "center",
+							label: ""
+						},
+						{view: "spacer"},
+					]
+				},
+				{view: "spacer", height: 50},
+				{
+					cols: [
+						{view: "spacer"},
+						{
+							view: "button",
+							localId: "start:again",
+							hidden: true,
+							width: 200,
+							value: "Start again",
+							click: () => {
+								this.$$("test:result").hide();
+								this.$$("start:again").hide();
+								this.$$("group:richselect").setValue("");
+								this.$$("group:richselect").show();
+							}
+						},
+						{view: "spacer"},
+					]
+				}
+			]
+		};
+
+		let wordsForTestView = {
+			rows: [
+				{
+					localId: "button:test:words",
+					hidden: true,
+					rows: [
+						{
+							cols: [
 								{view: "spacer"},
 								{
 									view: "label",
-									localId: "richselect:label",
-									label: "Please choose the group of words:",
-									align: "center"
-								},
-								{
-									view: "richselect",
 									align: "center",
-									width: 300,
-									options: { 
-										body: {
-											template:"#name#", data: wordsGroup
-										} 
-									},
-									on: {
-										"onChange": () => {
-											this.$$("segmented:label").show();
-											this._getSegmentedView().show();
-											this.getRoot().queryView({view: "richselect"}).hide();
-											this.$$("richselect:label").hide();
-											this.$$("start:button").show();
-										}
-									}
+									label: "",
+									localId: "word:to:translate:label",
+									css: "word_to_translate_label_style"
 								},
+								{view: "spacer"}
 							]
-							},
-							{view: "spacer"}
+						},
+						{ margin: 20,cols: [
+							{ 
+								view: "button",
+								localId:"1",
+								value: "",
+								width: 200,
+								click:() => {
+									this.checkRightAnswer(this.rightAnswerButton,"1");
+									this.generateTest();
+								}},
+							{ 
+								view: "button",
+								localId:"3",
+								value: "",
+								width: 200,
+								click:() => {
+									this.checkRightAnswer(this.rightAnswerButton,"3");
+									this.generateTest();
+								}},    
 						]
-					},
-					{
-						cols: [
-							{view: "spacer"},
-							{
-								rows: [
-									{
-										view: "label",
-										localId: "segmented:label",
-										hidden: true,
-										label: "Please choose the language for test:",
-										align: "center"
-									},
-									{
-										view:"segmented", hidden: true, width: 300,options:[
-											{ id:"Russia", value:"Russia" },
-											{ id:"English", value:"English"},
-										],
-									},
-									
-								]
-							},
-							{view: "spacer"}
-						]
-					},
-					{},
-					{
-						cols: [
-							{view: "spacer"},
-							{
-								view: "button", 
-								localId: "start:button",
-								hidden: true, 
-								value: "Start test",
-								width: 250,
-								click: () => {
-									this.$$("hidden:layout").hide();
-									this.onAfterStartTestButtonClick();
-								} 
-							},
-							{view: "spacer"}
-						]
-					}]},
-
+						}, 
+						{
+							rows: [
+								{
+									margin: 20,
+									cols: [
+										{ 
+											view: "button",
+											localId:"2",
+											value: "",
+											width: 200,
+											click:() => {
+												this.checkRightAnswer(this.rightAnswerButton,"2");
+												this.generateTest();
+											}},
+										{ 
+											view: "button",
+											localId:"4",
+											value: "",
+											width: 200,
+											click:() => {
+												this.checkRightAnswer(this.rightAnswerButton,"4");
+												this.generateTest();
+											}
+										},
+									]},
+							]
+						},	
+					]
+				}
+			]
+            
+		};
+        
+		return {
+			rows: [
+				{view: "spacer",height: 100},
 				{
 					cols: [
-						{
-							view: "label",
-							align:"center",
-							label: "",
-							localId: "mylabel",
-							css: "result_label"
-						}
-					]
-				},
-				{
-					margin:30, cols: [
 						{view: "spacer"},
-						{ 
-							view: "button",
-							localId:"1",
-							hidden: true,
-							value: "",
-							width: 200,
-							click:() => {
-								this.checkRightAnswer(this.rightAnswerButton,"1");
-								this.generateTest();
-							}
-						},
-						{ 
-							view: "button",
-							localId:"2",
-							hidden: true,
-							value: "",
-							width: 200,
-							click: () => {
-								this.checkRightAnswer(this.rightAnswerButton,"2");
-								this.generateTest();
-							}},
-						{
-							view: "button",
-							localId:"start_again",
-							value: _("Start again"),
-							width: 200,
-							hidden: true,
-							click: () => {
-								this.onAfterStartTestButtonClick();
-							}
-						},
-						// {
-						// 	view: "button",
-						// 	localId: "another_group",
-						// 	value: "Another group",
-						// 	width: 200,
-						// 	hidden: true,
-						// 	// TODO
-						// 	click: () => { 
-						// 		this.show("/startPage/test");
-						// 	}
-						// },
+						richSelectView,
 						{view: "spacer"}
 					]
 				},
-
 				{
-					margin: 30,cols: [
+					cols: [
 						{view: "spacer"},
-						{ 
-							view: "button",
-							localId:"3",
-							hidden: true,
-							value: "",
-							width: 200,
-							click:() => {
-								this.checkRightAnswer(this.rightAnswerButton,"3");
-								this.generateTest();
-							}},
-						{ 
-							view: "button",
-							localId:"4",
-							hidden: true,
-							value: "",
-							width: 200,
-							click:() => {
-								this.checkRightAnswer(this.rightAnswerButton,"4");
-								this.generateTest();
-							}},
+						segmentedView,
 						{view: "spacer"}
 					]
 				},
-				{view: "spacer"}
+				{
+					cols: [
+						{view: "spacer"},
+						wordsForTestView,
+						{view: "spacer"}
+					]  
+				},
+				resultLayout,
+				{view: "spacer"},
 			]
-           
-		};   
-        
+		};
 	}
     
 	countTestNumber() {
@@ -217,7 +252,7 @@ export default class doTest extends JetView {
 	showTestResult() {
 		const _ = this.app.getService("locale")._;
 		this.allButtonHide();
-		this.$$("mylabel").setValue(_("Your result:") + this.totalResult);
+		this.$$("test:result").setValue(_("Your result:") + this.totalResult);
 		testResultsCollection.add({"result": this.totalResult,"groupName": this.groupName});
 		this.testNumber = 0;
 		this.totalResult = 0;
@@ -249,18 +284,6 @@ export default class doTest extends JetView {
 
 		} else {
 			this.allButtonHide();
-			// TODO 
-			// webix.alert({
-			// 	title: "Close",
-			// 	text: "Add more words to the group",
-			// 	type:"alert-error",
-			// 	callback: (result) => {
-			// 		if (result) {
-			// 			alert("asdad");
-			// 		} 
-			// 	}
-			// });
-			// return;
 		}
 	}
 	
@@ -294,7 +317,7 @@ export default class doTest extends JetView {
 		}
 	}
 
-	setLabelWordForQuestion (selectedGroup) {
+	setLabelWordForQuestion(selectedGroup) {
 		this.randomWordId = this.getRandomRange(0, selectedGroup.words.length);
 		this.randomWordGroup = selectedGroup.words[this.randomWordId];
 		let randomWordfromSelectedGroup;
@@ -304,7 +327,7 @@ export default class doTest extends JetView {
 		} else {
 			randomWordfromSelectedGroup = this.randomWordGroup.originWords;
 		}
-		this.$$("mylabel").setValue(randomWordfromSelectedGroup);
+		this.$$("word:to:translate:label").setValue(randomWordfromSelectedGroup);
 	}
 
 	setButtonRightAnswer() {
@@ -322,23 +345,51 @@ export default class doTest extends JetView {
 	}
 
 	setButtonsWrongAnswer() {
+		if (this.getNeedBaseOfWords().length === 0) {
+			this.app.showError({message: "Base of words is empty. Please, add in base more words"});	
+			return;
+		}
+        
 		let indexButtonForDelete = this.buttonIndexForRemove;
 		let buttonIds = this.getButtonIds();
+        
+		let baseWords = this.generateAnswers(buttonIds.length);
 
-		buttonIds.splice(indexButtonForDelete,1);
-		for (var i = 0; i < buttonIds.length; i++) {
-			let randomSpeachWordId = this.getRandom(this.getNeedBaseOfWords().length); 
-			let randomSpeachWord = this.getNeedBaseOfWords()[randomSpeachWordId];
-			if (this.getNeedBaseOfWords().length === 0) {
-				this.app.showError({message: "Base of words is empty.Please, add in base more words"});	
-				return;
-			}
+		buttonIds.splice(indexButtonForDelete, 1);
+		for (var i = 0; i < buttonIds.length; i++) { 
+			let randomSpeachWord = baseWords[i];
+            
 			if (this.selectedValue === "Russia") {
 				this.$$(buttonIds[i]).setValue(randomSpeachWord.originWords);
 			} else {
 				this.$$(buttonIds[i]).setValue(randomSpeachWord.translation);
 			}
 		}
+	}
+    
+	generateAnswers(count) {
+		let answers = [];
+		let baseWords = this.getNeedBaseOfWords();
+        
+		if (baseWords.length < 4) {
+			for (let i = 0; i < count; i++) {
+				answers[i] = this.getRandom(baseWords.length);
+			}
+		} else {
+			let prevRandom;
+			for (let i = 0; i < count; i++) {
+				let newRandom;
+                
+				do {
+					newRandom = this.getRandom(baseWords.length);
+				} while (prevRandom === newRandom);
+
+				prevRandom = newRandom;
+				answers[i] = baseWords[newRandom];
+			}
+		}
+        
+		return answers;
 	}
 
 	getNeedBaseOfWords() {
@@ -373,12 +424,12 @@ export default class doTest extends JetView {
 	}
 
 	showStartAgainButton() {
-		this.$$("start_again").show();
-		this.$$("another_group").show();
+		this.$$("test:result").show();
+		this.$$("start:again").show();
 	}
 
 	hideStartAgainButton() {
-		this.$$("start_again").hide();
+		this.$$("start:again").hide();
 	}
 
 	allButtonValueClear() {
@@ -389,17 +440,11 @@ export default class doTest extends JetView {
 	}
     
 	allButtonHide() {
-		this.$$("1").hide();
-		this.$$("2").hide();
-		this.$$("3").hide();
-		this.$$("4").hide();
+		this.$$("button:test:words").hide();
 	}
 
 	allButtonShow() {
-		this.$$("1").show();
-		this.$$("2").show();
-		this.$$("3").show();
-		this.$$("4").show();
+		this.$$("button:test:words").show();
 	}
 
 	_getSegmentedView() {

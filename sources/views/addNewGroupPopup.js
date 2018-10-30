@@ -8,13 +8,13 @@ export default class addNewGroupPopupView extends JetView{
 
 		var form = {
 			view:"form",
-			width: 600,
+			width: 500,
 			gravity: 0.2,
 			elements: [
 				{
 					view: "text",
 					label: _("Name of group:"),
-					labelWidth: 150,
+					labelWidth: 120,
 					name: "name",
 					invalidMessage: "Name of group can not be empty"
 				}
@@ -29,17 +29,16 @@ export default class addNewGroupPopupView extends JetView{
 			scroll: true,
 			select: true,
 			multiselect: true,
-			width: 600,
 			columns: [
-				{id: "originWords",header: _("Origin word")},
-				{id: "translation",header: _("Translation")},
+				{id: "originWords",header: _("Origin word"),width: 150},
+				{id: "translation",header: _("Translation"),width: 150},
 				{id: "partOfSpeach",header: _("Part of speech"),width: 150},      
 			],
 		};
 		
 		return {
 			view:"window", 
-			width: 460,
+			width: 470,
 			height: 400,
 			modal: true,
 			head:_("Add new group"),
@@ -54,6 +53,11 @@ export default class addNewGroupPopupView extends JetView{
 				rows: [
 					form,
 					datatable,
+					{
+						view: "label",
+						label: "*Press ctrl + enter to add more than one word to the group",
+						css: "node_for_user"
+					},
 					{cols:[
 						{view: "spacer"},
 						{

@@ -24,7 +24,8 @@ const Word = sequelize.define("word", {
 
 const testResult = sequelize.define("testResult", {
 	result: Sequelize.INTEGER,
-	groupName: Sequelize.STRING
+	groupName: Sequelize.STRING,
+	createdAt: Sequelize.DATE
 });
 
 const wordsGroup = sequelize.define("wordsGroup",{

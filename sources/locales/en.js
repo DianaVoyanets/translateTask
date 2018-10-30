@@ -13,7 +13,7 @@ export default {
 	"Group Name": "Group name",
 	"Group name:": "Group name:",
 	"search of group name": "search of group name",
-	"Group of words": "Group of words",
+	"Group of words": "Groups of words",
 	"Base of words": "Base of words",
 	"Count of words in a group:": "Count of words in group:",
 	"Test": "Test",

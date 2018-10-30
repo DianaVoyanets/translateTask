@@ -131,7 +131,7 @@
 	color: #1CA1C1;
 }
 
-.result_label {
+.test_result_style {
 	font-size: 24px;
 } 
 
@@ -141,4 +141,12 @@
     line-height: 27px;
     font-size: 17px;
     white-space: nowrap;
-} 
+}
+
+.word_to_translate_label_style {
+    font-size: 18px;
+}
+
+.node_for_user div {
+    color: red;
+}

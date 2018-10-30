@@ -10,7 +10,7 @@ export default class MenuView extends JetView {
 			width:200,
 			data:[
 				{ id:"baseOfWords",value: _("Base of words"), icon:"mdi mdi-cart" },
-				{ id:"wordsGroupList", value:_("Group of words"), icon:"mdi mdi-account-box" },
+				{ id:"wordsGroupList", value:_("Groups of words"), icon:"mdi mdi-account-box" },
 				{ id:"test", value:_("Test"), icon:"mdi mdi-chart-areaspline" },
 				{ id:"testResult", value:_("Tests result"), icon:"mdi mdi-widgets" },
 			]

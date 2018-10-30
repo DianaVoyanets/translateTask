@@ -1,6 +1,6 @@
 import {JetView} from "webix-jet";
 import addNewGroupPopupView from "views/addNewGroupPopup";
-import addNewWordsPopupView from "views/addNewWordPopup";
+import addNewWordsPopupView from "views/editGroupPopup";
 import {wordsGroup} from "models/wordsGroup";
 
 export default class wordsGroupList extends JetView {
@@ -30,7 +30,10 @@ export default class wordsGroupList extends JetView {
 							label: "<span class='webix_icon fa fa-file-excel-o'></span><span class='text'>Export to Excel</span>",
 							autowidth:true,
 							click: () => {
-								webix.toExcel(this._getDataTable());
+								const selectedGroup = this._getWordsGroupList().getSelectedItem();
+								webix.toExcel(this._getDataTable(),{
+									filename: `${selectedGroup.name}`,
+								});
 							}
 						},
 					]
