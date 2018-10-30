@@ -12,7 +12,7 @@ export default {
 	"Russia": "Русский",
 	"Group Name": "Название группы",
 	"search of group name": "Поиск по названию группы",
-	"Group of words": "Группы слов",
+	"Groups of words": "Группы слов",
 	"Base of words": "База слов",
 	"Group name:": "Название группы:",
 	"Count of words in a group:": "Количество слов в группе:",
