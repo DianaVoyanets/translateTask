@@ -104,7 +104,8 @@ export default class LoginView extends JetView {
 		};
 	}
 
-	init (view){
+	init (view) {
+		const user = this.app.getService("user");
 		view.$view.querySelector("input").focus();
 	}
 
@@ -114,7 +115,8 @@ export default class LoginView extends JetView {
 
 		if (form.validate()) {
 			const dataFromFormInputs = form.getValues();
-            
+			console.log(user.getStatus());
+			
 			user.login(dataFromFormInputs.login, dataFromFormInputs.pass)
 				.catch( () => {
 					form.elements.pass.focus();

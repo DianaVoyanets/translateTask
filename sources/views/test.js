@@ -7,14 +7,14 @@ import {testResultsCollection} from "models/testResult";
 export default class doTest extends JetView {
 
 	config() {
-		// const _ = this.app.getService("locale")._;
+		const _ = this.app.getService("locale")._;
 		
 		this.groupName = "";
 		this.selectedValue = "";
 		this.testNumber = 0;
 		this.totalResult = 0;
 		this.randomWordId;
-		this.randomWordGroup;
+		this.randomWordForQuestion;
 		this.buttonIndexForRemove;
 		this.rightAnswerButton;
         
@@ -23,7 +23,7 @@ export default class doTest extends JetView {
 				{
 					view: "richselect",
 					localId: "group:richselect",
-					label: "Please select a group of words:",
+					label: _("Please select a group of words:"),
 					labelPosition: "top",
 					align: "center",
 					width: 300,
@@ -37,7 +37,7 @@ export default class doTest extends JetView {
 							if(!selectedGroup) return;
 							let countWordsInGroup = wordsGroup.getItem(selectedGroup).words.length;
 							if (!countWordsInGroup) {
-								this.app.showError({message: "Please add more words to the group" });
+								this.app.showError({message: _("Please add more words to the group")});
 								return;
 							}
 							this.$$("group:richselect").hide();
@@ -56,7 +56,7 @@ export default class doTest extends JetView {
 				rows: [
 					{
 						view:"segmented",
-						label: "Please select language to pass the test:",
+						label: _("Please select language to pass the test:"),
 						labelPosition: "top",  
 						width: 300,
 						options:[
@@ -71,7 +71,7 @@ export default class doTest extends JetView {
 							{
 								view: "button",
 								localId: "start:test",
-								value: "Start test",
+								value: _("Start test"),
 								width: 200,
 								click: () => {
 									this.$$("segmented:layout").hide();
@@ -93,7 +93,7 @@ export default class doTest extends JetView {
 						{view: "spacer"},
 						{
 							view: "label",
-							localId: "test:result",
+							localId: "test:result:label",
 							css: "test_result_style",
 							width: 200,
 							align: "center",
@@ -111,9 +111,9 @@ export default class doTest extends JetView {
 							localId: "start:again",
 							hidden: true,
 							width: 200,
-							value: "Start again",
+							value: _("Start again"),
 							click: () => {
-								this.$$("test:result").hide();
+								this.$$("test:result:label").hide();
 								this.$$("start:again").hide();
 								this.$$("group:richselect").setValue("");
 								this.$$("group:richselect").show();
@@ -153,7 +153,8 @@ export default class doTest extends JetView {
 								click:() => {
 									this.checkRightAnswer(this.rightAnswerButton,"1");
 									this.generateTest();
-								}},
+								}
+							},
 							{ 
 								view: "button",
 								localId:"3",
@@ -177,8 +178,8 @@ export default class doTest extends JetView {
 											width: 200,
 											click:() => {
 												this.checkRightAnswer(this.rightAnswerButton,"2");
-												this.generateTest();
-											}},
+												this.generateTest();}
+										},
 										{ 
 											view: "button",
 											localId:"4",
@@ -252,7 +253,7 @@ export default class doTest extends JetView {
 	showTestResult() {
 		const _ = this.app.getService("locale")._;
 		this.allButtonHide();
-		this.$$("test:result").setValue(_("Your result:") + this.totalResult);
+		this.$$("test:result:label").setValue(_("Your result:") + this.totalResult);
 		testResultsCollection.add({"result": this.totalResult,"groupName": this.groupName});
 		this.testNumber = 0;
 		this.totalResult = 0;
@@ -260,9 +261,10 @@ export default class doTest extends JetView {
 
 	generateTest() {
 		this.countTestNumber();
-
+		const _ = this.app.getService("locale")._;
+		
 		if (!this.groupName)  {
-			this.app.showError({message: "Please,select the words group"});	
+			this.app.showError({message: _("Please,select the words group")});	
 			return;
 		}
 
@@ -272,12 +274,16 @@ export default class doTest extends JetView {
 			return;
 		}
 
+		let selectedGroupWords = webix.copy(this.getSelectedGroup().words);
+
 		if (Array.isArray(this.getSelectedGroup().words)) {
+			this.allButtonRefresh();
 			this.allButtonValueClear();
-			this.setLabelWordForQuestion(this.getSelectedGroup());
+   
+			this.setLabelWordForQuestion(selectedGroupWords);
 
 			if (this.getNeedBaseOfWords().length === 0) {
-				this.getNeedBaseOfWords().push(this.randomWordGroup);
+				this.getNeedBaseOfWords().push(this.randomWordForQuestion);
 			}
 			this.setButtonRightAnswer();
 			this.setButtonsWrongAnswer();
@@ -291,8 +297,8 @@ export default class doTest extends JetView {
 		if (clickButton === rightAnswerButton) {
 			let clickButtonValue = this.$$(clickButton).getValue();
 			if (this.selectedValue === "Russia") {
-				if (this.randomWordGroup.originWords === clickButtonValue) {
-					if (this.randomWordGroup.partOfSpeach === "Verb" || this.randomWordGroup.partOfSpeach === "Noun"){
+				if (this.randomWordForQuestion.originWords === clickButtonValue) {
+					if (this.randomWordForQuestion.partOfSpeach === "Verb" || this.randomWordForQuestion.partOfSpeach === "Noun"){
 						this.totalResult += 2;
 					} else {
 						this.totalResult++;
@@ -301,8 +307,8 @@ export default class doTest extends JetView {
 					return;
 				}
 			} else {
-				if (this.randomWordGroup.translation === clickButtonValue) {
-					if (this.randomWordGroup.partOfSpeach === "Verb" || this.randomWordGroup.partOfSpeach === "Noun"){
+				if (this.randomWordForQuestion.translation === clickButtonValue) {
+					if (this.randomWordForQuestion.partOfSpeach === "Verb" || this.randomWordForQuestion.partOfSpeach === "Noun"){
 						this.totalResult += 2;
 					} else {
 						this.totalResult++;
@@ -317,15 +323,20 @@ export default class doTest extends JetView {
 		}
 	}
 
-	setLabelWordForQuestion(selectedGroup) {
-		this.randomWordId = this.getRandomRange(0, selectedGroup.words.length);
-		this.randomWordGroup = selectedGroup.words[this.randomWordId];
+	setLabelWordForQuestion(selectedGroupWords) {
+		this.randomWordId = this.getRandomRange(0,selectedGroupWords.length);
+
+	
+		this.randomWordForQuestion = selectedGroupWords[this.randomWordId];
+		selectedGroupWords.splice(selectedGroupWords[this.randomWordId],1);
+
+
 		let randomWordfromSelectedGroup;
 
 		if(this.selectedValue === "Russia") {
-			randomWordfromSelectedGroup = this.randomWordGroup.translation;
+			randomWordfromSelectedGroup = this.randomWordForQuestion.translation;
 		} else {
-			randomWordfromSelectedGroup = this.randomWordGroup.originWords;
+			randomWordfromSelectedGroup = this.randomWordForQuestion.originWords;
 		}
 		this.$$("word:to:translate:label").setValue(randomWordfromSelectedGroup);
 	}
@@ -333,20 +344,23 @@ export default class doTest extends JetView {
 	setButtonRightAnswer() {
 		let randomRightTranslateWord;
 		if (this.selectedValue === "Russia") {
-			randomRightTranslateWord = this.randomWordGroup.originWords;
+			randomRightTranslateWord = this.randomWordForQuestion.originWords;
 		} else {
-			randomRightTranslateWord = this.randomWordGroup.translation;
+			randomRightTranslateWord = this.randomWordForQuestion.translation;
 		}
 		let randomIndex = this.getRandomButtonIndex();
 		let randomButtonId = this.getButtonIds()[randomIndex];
+
 		this.$$(randomButtonId).setValue(randomRightTranslateWord);
 		this.rightAnswerButton = randomButtonId;
 		this.buttonIndexForRemove = randomIndex;
 	}
 
 	setButtonsWrongAnswer() {
+		const _ = this.app.getService("locale")._;
+
 		if (this.getNeedBaseOfWords().length === 0) {
-			this.app.showError({message: "Base of words is empty. Please, add in base more words"});	
+			this.app.showError({message: _("Base of words is empty. Please, add in base more words")});	
 			return;
 		}
         
@@ -394,9 +408,9 @@ export default class doTest extends JetView {
 
 	getNeedBaseOfWords() {
 		let partOfSpeachWords = baseOfWordsCollection.find(obj => {
-			return obj.partOfSpeach === this.randomWordGroup.partOfSpeach 
-				&& obj.translation !== 	this.randomWordGroup.translation 
-				&& obj.originWords !== 	this.randomWordGroup.originWords;
+			return obj.partOfSpeach === this.randomWordForQuestion.partOfSpeach 
+				&& obj.translation !== 	this.randomWordForQuestion.translation 
+				&& obj.originWords !== 	this.randomWordForQuestion.originWords;
 		});
 		return partOfSpeachWords;
 	}
@@ -424,7 +438,7 @@ export default class doTest extends JetView {
 	}
 
 	showStartAgainButton() {
-		this.$$("test:result").show();
+		this.$$("test:result:label").show();
 		this.$$("start:again").show();
 	}
 
@@ -438,7 +452,14 @@ export default class doTest extends JetView {
 		this.$$("3").setValue("");
 		this.$$("4").setValue("");
 	}
-    
+
+	allButtonRefresh() {
+		this.$$("1").refresh();
+		this.$$("2").refresh();
+		this.$$("3").refresh();
+		this.$$("4").refresh();
+	}
+	
 	allButtonHide() {
 		this.$$("button:test:words").hide();
 	}
@@ -450,4 +471,5 @@ export default class doTest extends JetView {
 	_getSegmentedView() {
 		return this.getRoot().queryView({view: "segmented"});
 	}
+
 }

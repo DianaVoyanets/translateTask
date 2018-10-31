@@ -17,7 +17,7 @@ export default class wordsGroupList extends JetView {
 						{	
 							view: "button",
 							type:"iconButton",
-							icon: "plus",
+							icon: "mdi mdi-table-edit",
 							label: _("Edit group"),
 							localId: "newWord:button",
 							hidden: true,
@@ -27,7 +27,8 @@ export default class wordsGroupList extends JetView {
 						{   
 							view:"button",
 							type:"iconButton",
-							label: "<span class='webix_icon fa fa-file-excel-o'></span><span class='text'>Export to Excel</span>",
+							icon: "mdi mdi-file-excel",
+							label: "Export to Excel",
 							autowidth:true,
 							click: () => {
 								const selectedGroup = this._getWordsGroupList().getSelectedItem();
@@ -57,7 +58,7 @@ export default class wordsGroupList extends JetView {
 					cols:[
 						{ 
 							view:"label",
-							label:_("Group of words")
+							label:_("Groups of words")
 						},
 					]
 				},
@@ -100,7 +101,10 @@ export default class wordsGroupList extends JetView {
 				},
 				{
 					view: "button",
-					value:_("Add new group"),
+					type: "iconButton",
+					css: "add_group_label",
+					icon: "mdi mdi-tab-plus",
+					label:_("Add new group"),
 					click: () => this._addNewGroupPopupView.showWindow()
 				},
 			]

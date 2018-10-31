@@ -26,7 +26,7 @@ export default {
 	"Cancel": "Отменить",
 	"Login": "Зарегистрироваться",
 	"Start again": "Начать с начала",
-	"Your result": "Ваш результат",
+	"Your result:": "Ваш результат: ",
 	"Add new words": "Добавить новое слово",
 	"Add new group": "Добавить новую группу",
 	"Edit group of words": "Изменить группу слов",
@@ -34,5 +34,11 @@ export default {
 	"User Name:" : "Имя пользователя:",
 	"Password": "Пароль:",
 	"Name of group:": "Название группы:",
-	"Edit group": "Редактировать группу"
+	"Edit group": "Редактировать группу",
+	"Please select a group of words:": "Выберите группу слов:",
+	"*Сtrl + enter to add more than one word to the group.": "*Сtrl + enter для добавления больше чем одного слова в группу.",
+	"Name of group can not be empty": "Поле название группы не должно быть пустым",
+	"Please select language to pass the test:": "Выберите язык для прохождения теста:",
+	"Start test": "Пройти тест",
+	"Sign out": "Выйти"
 };

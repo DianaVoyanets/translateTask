@@ -23,16 +23,19 @@ export default class ToolView extends JetView {
 				{
 					view: "template",
 					template: (obj) => {
-						return `<span class='logged-user'>${obj ? obj.login : ""}</span>`;
+						return `<span class='logged-user mdi mdi-account'>${obj ? obj.login : ""}</span>`;
 					},
 					url: "/server/login/status",
 					width: 120
 				},
-				{	
-					view: "button",
-					value: _("Log out"),
-					width: 200,
-					click: () => this.show("/logout")
+				{
+					view:"button",
+					type:"iconButton", 
+					icon:"mdi mdi-share",
+					align:"center", 
+					label:_("Sign out"), 
+					autowidth:true, 
+					click: () => this.show("/logout") 
 				}
 			]
 		};

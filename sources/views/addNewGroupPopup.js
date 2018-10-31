@@ -16,7 +16,7 @@ export default class addNewGroupPopupView extends JetView{
 					label: _("Name of group:"),
 					labelWidth: 120,
 					name: "name",
-					invalidMessage: "Name of group can not be empty"
+					invalidMessage: _("Name of group can not be empty")
 				}
 			],
 			rules: {
@@ -55,7 +55,7 @@ export default class addNewGroupPopupView extends JetView{
 					datatable,
 					{
 						view: "label",
-						label: "*Press ctrl + enter to add more than one word to the group",
+						label: _("*Сtrl + enter to add more than one word to the group."),
 						css: "node_for_user"
 					},
 					{cols:[
@@ -83,11 +83,13 @@ export default class addNewGroupPopupView extends JetView{
 	}
 
 	addGroup() {
+		const _ = this.app.getService("locale")._;
+
 		let group = this._getForm().getValues();
 		group.words = this._getDataTable().getSelectedItem();
 		if(this._getForm().validate()) {
 			if(!group.words) {
-				this.app.showError({message: "Please select the words,which you want to add to the words group"});
+				this.app.showError({message: _("Please select the words,which you want to add to the words group")});
 				return;
 			} else {
 				wordsGroup.add(group);

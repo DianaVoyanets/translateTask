@@ -35,4 +35,10 @@ export default {
 	"Password": "Password:",
 	"Name of group:": "Name of group:",
 	"Edit group": "Edit group",
+	"Please select a group of words:": "Please select a group of words:",
+	"*Сtrl + enter to add more than one word to the group.": "*Сtrl + enter to add more than one word to the group.",
+	"Name of group can not be empty": "Name of group can not be empty",
+	"Please select language to pass the test:": "Please select language to pass the test:",
+	"Start test": "Start test",
+	"Sign out": "Sign out"
 };

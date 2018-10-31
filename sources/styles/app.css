@@ -150,3 +150,7 @@
 .node_for_user div {
     color: red;
 }
+
+.add_group_label button {
+    text-align: center;
+}
