@@ -54,8 +54,8 @@ export default class addNewGroupPopupView extends JetView{
 					form,
 					datatable,
 					{
-						view: "label",
-						label: _("*Сtrl + enter to add more than one word to the group."),
+						template: _("*Use ctrl+click or shift+click to select more than one word."),
+						height: 40,
 						css: "node_for_user"
 					},
 					{cols:[

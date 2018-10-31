@@ -149,6 +149,7 @@
 
 .node_for_user div {
     color: red;
+    word-wrap: break-word;
 }
 
 .add_group_label button {

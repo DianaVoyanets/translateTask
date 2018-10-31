@@ -36,7 +36,7 @@ export default {
 	"Name of group:": "Название группы:",
 	"Edit group": "Редактировать группу",
 	"Please select a group of words:": "Выберите группу слов:",
-	"*Сtrl + enter to add more than one word to the group.": "*Сtrl + enter для добавления больше чем одного слова в группу.",
+	"*Use ctrl+click or shift+click to select more than one word.": "*Используйте ctrl+click или shift+click для добавления больше чем одного слова в группу.",
 	"Name of group can not be empty": "Поле название группы не должно быть пустым",
 	"Please select language to pass the test:": "Выберите язык для прохождения теста:",
 	"Start test": "Пройти тест",

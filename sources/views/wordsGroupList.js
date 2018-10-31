@@ -127,6 +127,8 @@ export default class wordsGroupList extends JetView {
 			this._getWordsGroupList().select(wordsGroup.getFirstId());	
 		});
 
+		wordsGroup.attachEvent("onAfterDelete", () => this._getWordsGroupList().select(wordsGroup.getFirstId()));
+
 		this.on(this.app,"onAfterAddNewGroup",() => this._getWordsGroupList().select(wordsGroup.getLastId()));
 		this.searchWordsGroup();
 	}
